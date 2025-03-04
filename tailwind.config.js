@@ -3,7 +3,7 @@ import gluestackPlugin from '@gluestack-ui/nativewind-utils/tailwind-plugin';
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: "media",
-  content: ["app/**/*.{tsx,jsx,ts,js}", "components/**/*.{tsx,jsx,ts,js}"],
+  content: ["./app/**/*.{tsx,jsx,ts,js}", "components/**/*.{tsx,jsx,ts,js}"],
   presets: [require('nativewind/preset')],
   safelist: [
     {
@@ -15,7 +15,7 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          0: 'rgb(var(--color-primary)/<alpha-value>)',
+          0: 'rgb(var(--color-primary-0)/<alpha-value>)',
         },
         secondary: {
           0: 'rgb(var(--color-secondary)/<alpha-value>)',
@@ -43,7 +43,7 @@ module.exports = {
           black: '#1c1c1c',
         },
         background: {
-          0: 'rgb(var(--color-background)/<alpha-value>)',
+          0: 'rgb(var(--color-background-0)/<alpha-value>)',
           error: 'rgb(var(--color-background-error)/<alpha-value>)',
           warning: 'rgb(var(--color-background-warning)/<alpha-value>)',
           muted: 'rgb(var(--color-background-muted)/<alpha-value>)',
@@ -69,6 +69,7 @@ module.exports = {
       },
       fontSize: {
         '2xs': '10px',
+        'xs' : '14px'
       },
       boxShadow: {
         'hard-1': '-2px 2px 8px 0px rgba(38, 38, 38, 0.20)',
@@ -81,6 +82,9 @@ module.exports = {
         'soft-3': '0px 0px 30px rgba(38, 38, 38, 0.1)',
         'soft-4': '0px 0px 40px rgba(38, 38, 38, 0.1)',
       },
+    },
+    borderRadius: {
+      'custom': '8px',  
     },
   },
   plugins: [gluestackPlugin],
