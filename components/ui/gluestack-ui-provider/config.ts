@@ -6,7 +6,7 @@ export const config = {
   light: vars({
     '--color-primary-0': '0 63 80',
     '--color-secondary-0': '126 55 23',
-    '--color-tertiary': '229 170 123',
+    '--color-tertiary-0': '229 170 123',
     '--color-error': '',
     '--color-success': '',
     '--color-warning': '',

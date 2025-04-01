@@ -55,11 +55,19 @@ function ActionSheet({isClasses = false,
                         data={standards}
                         keyExtractor={(item, index) => String(index)}
                         renderItem={({ item } ) => <Item name={String(item)} />}
-                    />)}
+                    />
+                )}
                 {isClasses && 
-                (<ActionsheetScrollView> 
-                    <AccordionClasses selectedClass={selectedClass ?? ""} setSelectedClass={setSelectedClass} classes={classes}/> 
-                </ActionsheetScrollView>)}                             
+                (
+                <ActionsheetScrollView> 
+                    <AccordionClasses 
+                        className="flex justify-center m-3 w-[95%] text-typography-0" 
+                        selectedClass={selectedClass ?? ""} 
+                        setSelectedClass={setSelectedClass} 
+                        classes={classes}
+                    /> 
+                </ActionsheetScrollView>
+            )}                             
             </ActionsheetContent>
         </Actionsheet>
     )

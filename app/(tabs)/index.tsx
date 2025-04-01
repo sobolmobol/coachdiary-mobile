@@ -3,7 +3,7 @@ import { BlueButton } from "@/components/Button";
 import React from "react"
 import { ActionSheet } from "@/components/ActionSheet";
 import { Gender, StandardResponse } from '@/types/types'
-
+import { TableDiary } from "@/components/Table";
 const classes = [
   {
     id: 0,
@@ -187,6 +187,9 @@ export default function Index() {
         <BlueButton isAddFilterIcon/>
         <ActionSheet isStandards standards={getStandardsByClass(10, standards)}  handleClose={handleCloseStand} isOpen={showActionsheetStand} onClose={handleCloseStand}/>
         <ActionSheet isClasses classes={cls} handleClose={handleCloseClasses} isOpen={showActionsheetClasses} onClose={handleCloseClasses}/>
+      </View>
+      <View className="w-full">
+        <TableDiary/>
       </View>
     </View>
   );

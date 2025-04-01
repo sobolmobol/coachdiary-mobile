@@ -13,16 +13,16 @@ import { Divider } from "@/components/ui/divider"
 import { ChevronUpIcon, ChevronDownIcon } from "@/components/ui/icon"
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
-import React, {useState} from 'react'
+import React from 'react'
 type ItemProps = {
   item: string;
   onPress: () => void;
-  backgroundColor: string;
-  textColor: string;
+  backgroundColorStyle: string;
+  textColorStyle: string;
 };
-const Item = ({ item, onPress, backgroundColor, textColor } : ItemProps) => (
-  <TouchableOpacity onPress={onPress} style={{backgroundColor: backgroundColor}}>
-    <Text style={{color: textColor }}>{ item }</Text>
+const Item = ({ item, onPress, backgroundColorStyle, textColorStyle } : ItemProps) => (
+  <TouchableOpacity onPress={onPress} className={"p-4 rounded-custom " + backgroundColorStyle}>
+    <Text className={"text-xs " + textColorStyle}>{ item }</Text>
   </TouchableOpacity>
 );
 function AccordionClasses({classes,
@@ -35,39 +35,41 @@ function AccordionClasses({classes,
 }& React.ComponentProps<typeof Accordion>) {
 
   const renderItem = ({item}: {item: string}) => {
-    const backgroundColor = item === selectedClass ? '#6e3b6e' : '#f9c2ff';
-    const color = item === selectedClass ? 'white' : 'black';
+    const backgroundColor = item === selectedClass ? 'bg-primary-0' : 'bg-background-0';
+    const color = item === selectedClass ? 'text-typography-0' : 'text-typography-1';
     return (
       <Item
         item={item}
         onPress={() => setSelectedClass(item)}
-        backgroundColor={backgroundColor}
-        textColor={color}
+        backgroundColorStyle={backgroundColor}
+        textColorStyle={color}
       />
     );
   };
-
-    return (
-      <Accordion
-        size="md"
-        variant="filled"
-        type="single"
-        isCollapsible={true}
-        isDisabled={false}
-        className="m-5 w-[95%] border border-primary-0 rounded-custom"
-      >
-        {classes.map((item) => (
-        <AccordionItem value={`item-${item.id}`} key={`item-${item.id}`}>
+  return (
+    <Accordion
+      size="md"
+      variant="filled"
+      type="single"
+      isCollapsible={true}
+      isDisabled={false}
+      onValueChange={() => setSelectedClass}
+    >
+      {classes.map((item) => (
+        <AccordionItem 
+          value={item.id.toString()} 
+          key={`item-${item.id}`}
+          className="border-t border-b outline-1">
           <AccordionHeader>
             <AccordionTrigger>
 
               {({ isExpanded }) => (
                 <Text>
-                  <AccordionTitleText> {item.number}</AccordionTitleText>
+                  <AccordionTitleText> {item.number + " год обучения"}</AccordionTitleText>
                   {isExpanded ? (
-                    <AccordionIcon as={ChevronUpIcon} className="ml-3" />
+                    <AccordionIcon as={ChevronUpIcon} />
                   ) : (
-                    <AccordionIcon as={ChevronDownIcon} className="ml-3" />
+                    <AccordionIcon as={ChevronDownIcon}  />
                   )}
                 </Text>
               )}
@@ -75,10 +77,11 @@ function AccordionClasses({classes,
             </AccordionTrigger>
           </AccordionHeader>
           <AccordionContent>
-            <View style={{ flex: 1 }}>
+            <View style={{flex: 1}}>
               <SafeAreaProvider>
                 <SafeAreaView >
                   <FlatList
+                    contentContainerClassName="flex justify-center"
                     data={item.class_name}
                     renderItem={renderItem}
                     keyExtractor={item => item}
@@ -89,11 +92,10 @@ function AccordionClasses({classes,
               </SafeAreaProvider>
             </View>
           </AccordionContent>
-          <Divider />
-        </AccordionItem>
-        
-      ))}
-      </Accordion>
-    )
+      </AccordionItem>
+      
+    ))}
+    </Accordion>
+  )
 }
 export { AccordionClasses };
