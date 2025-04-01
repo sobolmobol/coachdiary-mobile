@@ -33,7 +33,7 @@ module.exports = {
           0: 'rgb(var(--color-warning)/<alpha-value>)',
         },
         info: {
-          0: 'rgb(var(--color-info)/<alpha-value>)',
+          0: 'rgb(var(--color-info-0)/<alpha-value>)',
         },
         typography: {
           0: 'rgb(var(--color-typography-0)/<alpha-value>)',
