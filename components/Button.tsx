@@ -1,16 +1,26 @@
 import { Button, ButtonText } from "@/components/ui/button"
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { View } from "react-native";
 
-function BlueButton({ buttonText, isAddFilterIcon, ...props } : 
+function CustomButton({ 
+  buttonText, 
+  isAddFilterIcon, 
+  color,
+  className,
+  textColor = 'background-0',
+  ...props } : 
     { 
       buttonText?: string,
       isAddFilterIcon?: boolean,
+      color: string,
+      className?: string, 
+      textColor?: string
     }& React.ComponentProps<typeof Button>
 ){
+  const colorStyle = color == "blue" ? "bg-primary-0" : color == "orange" ? "bg-secondary-0" : ''
   return (
-    <Button className="bg-primary-0 text-background-0 rounded-custom shadow-hard-2" 
+    <Button className={`text-${textColor} rounded-custom ${colorStyle} ${className}`}
             size="sm" 
-            variant="solid" 
             action="primary"
             {... props}>
       {buttonText && <ButtonText className="text-xs">{buttonText}</ButtonText>}
@@ -19,4 +29,4 @@ function BlueButton({ buttonText, isAddFilterIcon, ...props } :
   )
 }
 
-export { BlueButton };
+export { CustomButton };

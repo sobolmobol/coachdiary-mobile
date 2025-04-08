@@ -5,15 +5,20 @@ import { vars } from 'nativewind';
 export const config = {
   light: vars({
     '--color-primary-0': '0 63 80',
-    '--color-secondary-0': '126 55 23',
+    '--color-secondary-0': '81 40 35',
     '--color-tertiary-0': '229 170 123',
-    '--color-error': '',
-    '--color-success': '',
-    '--color-warning': '',
+    '--color-tertiary-1': '235 82 132',
+    '--color-tertiary-2': '66 170 255',
+    '--color-error-0': '56 21 15',
+    '--color-success-0': '1 57 56',
+    '--color-warning-0': '233 144 69',
     '--color-info-0': '115 86 190',
+    '--color-info-1': '42 159 120',
     '--color-typography-0': '255 243 225',
     '--color-typography-1': '34 41 24',
     '--color-background-0': '255 243 225',
+    '--color-background-1': '240 248 255',
+    
   }),
   dark: vars({
     '--color-primary-0': '',
