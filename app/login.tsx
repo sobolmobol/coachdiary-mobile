@@ -18,13 +18,16 @@ export default function LoginScreen() {
   const router = useRouter();
   return (
     <View className="bg-primary-0 w-full h-full flex items-center justify-center">
-      <View className="bg-background-0 w-[80%] h-[80%] rounded-custom flex items-center justify-evenly shadow-md">
+      <View className="bg-background-1 w-[80%] h-[80%] rounded-custom flex items-center justify-evenly shadow-md">
         <Image
           size="lg"
           source={require('../assets/images/mobile_logo_blue.png')}
           alt="image"
           className="aspect-[1280/473] w-full"/>
-        <View className="w-[90%] flex justify-between gap-3">
+        <View className="w-[90%] flex justify-between items-center gap-3">
+          <View className="w-[90%] flex justify-end items-start gap-2">
+            <Text className="font-extrabold text-l text-start text-primary-0">Вход</Text>
+          </View>
           <Input className="rounded-custom border-typography-1">
             <InputField placeholder="Почта"/>
           </Input>
@@ -34,7 +37,7 @@ export default function LoginScreen() {
               <InputIcon className="text-typography-1/50 w-5 h-5" as={showPassword ? EyeIcon : EyeOffIcon} />
             </InputSlot>
           </Input>
-          <CustomButton color="blue" buttonText="Войти" textColor="background-1"/>
+          <CustomButton color="blue" buttonText="Войти" className="w-full" classNameText="text-background-1"/>
         </View>
         <View className="w-full flex gap-8">
           <View className="flex-row justify-center items-center gap-2">
@@ -42,7 +45,7 @@ export default function LoginScreen() {
               <Text className="text-primary-0 font-bold text-s">ИЛИ</Text>
             <Divider className="w-[38%] my-0.5 bg-typography-1/50" orientation="horizontal"/>
           </View>
-          <View className="flex-row justify-center items-start gap-1">
+          <View className="flex justify-start items-center gap-1">
             <Text className="text-typography-1">
               У вас еще нет аккаунта?
             </Text>

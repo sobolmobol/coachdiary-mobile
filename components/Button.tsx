@@ -7,23 +7,22 @@ function CustomButton({
   isAddFilterIcon, 
   color,
   className,
-  textColor = 'background-0',
+  classNameText,
   ...props } : 
     { 
       buttonText?: string,
       isAddFilterIcon?: boolean,
       color: string,
       className?: string, 
-      textColor?: string
+      classNameText?: string
     }& React.ComponentProps<typeof Button>
 ){
-  const colorStyle = color == "blue" ? "bg-primary-0" : color == "orange" ? "bg-secondary-0" : ''
+  const colorStyle = color == "blue" ? "bg-primary-0" : color == "orange" ? "bg-secondary-0/80" : ''
   return (
-    <Button className={`text-${textColor} rounded-custom ${colorStyle} ${className}`}
-            size="sm" 
+    <Button className={`rounded-custom ${colorStyle} ${className}`}
             action="primary"
             {... props}>
-      {buttonText && <ButtonText className="text-xs">{buttonText}</ButtonText>}
+      {buttonText && <ButtonText className={`text-xs ${classNameText}`}>{buttonText}</ButtonText>}
       {isAddFilterIcon && <ButtonText><FontAwesome5 name="filter" size={16} /></ButtonText>}
     </Button>
   )

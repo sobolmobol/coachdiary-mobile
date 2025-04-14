@@ -18,13 +18,16 @@ export default function LoginScreen() {
   const router = useRouter();
   return (
     <View className="bg-primary-0 w-full h-full flex items-center justify-center">
-      <View className="bg-background-0 w-[80%] h-[80%] rounded-custom flex items-center justify-evenly shadow-md">
+      <View className="bg-background-1 w-[80%] h-[80%] rounded-custom flex items-center justify-evenly shadow-md">
         <Image
           size="lg"
           source={require('../assets/images/mobile_logo_blue.png')}
           alt="image"
           className="aspect-[1280/473] w-full"/>
         <View className="w-[90%] flex justify-between gap-3">
+          <View className="w-[90%] flex justify-end items-start gap-2">
+            <Text className="font-extrabold text-l text-start text-primary-0">Регистрация</Text>
+          </View>
           <Input className="rounded-custom border-typography-1">
             <InputField placeholder="Фамилия"/>
           </Input>
@@ -49,7 +52,7 @@ export default function LoginScreen() {
               <InputIcon className="text-typography-1/50 w-5 h-5" as={showPassword ? EyeIcon : EyeOffIcon} />
             </InputSlot>
           </Input>
-          <CustomButton color="blue" buttonText="Зарегистрироваться" textColor="background-1"/>
+          <CustomButton color="blue" buttonText="Зарегистрироваться" className="w-full" classNameText="text-background-1"/>
         </View>
         <View className="w-full flex gap-3">
           <View className="flex-row justify-center items-center gap-2">

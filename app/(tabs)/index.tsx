@@ -360,9 +360,10 @@ export default function Index() {
     });
   }, [selectedStandard]);
   return (
-    <View className="bg-background-0 flex-1">
+    <View className="bg-background-1 flex-1">
       <View className="w-full flex-row justify-between p-4">
         <CustomButton 
+          classNameText="text-background-1"
           color={selectedClass.class_letter=="" ? "blue" : "orange"} 
           buttonText={selectedClass.class_letter=="" ? "Выбрать класс" : `${selectedClass.class_number}${selectedClass.class_letter}`} 
           onPress={() => {
@@ -373,6 +374,7 @@ export default function Index() {
               setShowActionsheetClasses(true);
             }}/>
         <CustomButton
+          classNameText="text-background-1"
           color={selectedStandard.id == -1 ? "blue" : "orange"}
           buttonText={selectedStandard.id == -1 ? "Выбрать норматив" : selectedStandard.standard.toUpperCase()} 
           onPress={() => {
@@ -383,6 +385,7 @@ export default function Index() {
             setShowActionsheetStand(true);
           }}/>
         <CustomButton 
+          classNameText="text-background-1"
           color="blue" 
           isAddFilterIcon
           onPress={() => setShowActionsheetFilters(true)}/>
@@ -413,7 +416,6 @@ export default function Index() {
           standardType={standardType}
           students={selectedStandard.id === -1 ? [] : students}/>
       </View>
-      <View></View>
     </View>
   );
 }

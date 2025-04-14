@@ -9,22 +9,17 @@ import { vars } from 'nativewind';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  console.log(config[colorScheme ?? 'light']['--color-tertiary'])
   return (
     <Tabs screenOptions={{ 
       headerStyle: {
         backgroundColor: '#003F50',
-        borderBottomLeftRadius: 8, 
-        borderBottomRightRadius: 8, 
       },
       headerTitleAlign: 'center',
-      headerTintColor: '#FFF3E1',
+      headerTintColor: '#f0f8ff',
       tabBarActiveTintColor: '#E5AA7B',     
-      tabBarInactiveTintColor: '#FFF3E1',
+      tabBarInactiveTintColor: '#f0f8ff',
       tabBarStyle: {
         backgroundColor: '#003F50', 
-        borderTopLeftRadius: 8, 
-        borderTopRightRadius: 8, 
         padding: 10,  
       },
       /*tabBarActiveTintColor: `rgb(var(${config[colorScheme ?? 'light']['--color-tertiary']}))`,  

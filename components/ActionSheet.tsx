@@ -69,8 +69,8 @@ function ActionSheet({
         & React.ComponentProps<typeof Actionsheet>
     ){
         const Item = React.useCallback(({ item, onPress, backgroundColorStyle, textColorStyle } : ItemProps) => (
-            <ActionsheetItem onPress={onPress} className={"p-4 rounded-custom " + backgroundColorStyle}>
-                <ActionsheetItemText className={"text-xs " + textColorStyle}>{ item.standard }</ActionsheetItemText>
+            <ActionsheetItem onPress={onPress} className={`p-4 rounded-custom ${backgroundColorStyle}`}>
+                <ActionsheetItemText className={`text-xs ${textColorStyle}`}>{ item.standard }</ActionsheetItemText>
             </ActionsheetItem >
         ), [])   
         const renderItem = React.useCallback(({ item }: { item: ItemData }) => {
@@ -96,7 +96,7 @@ function ActionSheet({
             <Actionsheet {...props} >
 
                 <ActionsheetBackdrop />
-                <ActionsheetContent className="bg-background-0 rounded-custom border-background-0">
+                <ActionsheetContent className="bg-background-0 rounded-t-custom-big border-background-0">
                     <ActionsheetDragIndicatorWrapper >
                         <ActionsheetDragIndicator className="bg-primary-0 rounded-custom" />
                     </ActionsheetDragIndicatorWrapper>

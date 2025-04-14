@@ -72,9 +72,12 @@ module.exports = {
         extrablack: '950',
       },
       fontSize: {
-        '2xs': '10px',
+        '3xs': '8px',
+        '2xs': '12px',
         'xs' : '14px',
-        's' : '16px'
+        's' : '16px',
+        'm' : '18px',
+        'l' : '22px',
       },
       boxShadow: {
         'hard-1': '-2px 2px 8px 0px rgba(38, 38, 38, 0.20)',
@@ -90,9 +93,13 @@ module.exports = {
     },
     borderRadius: {
       'custom': '8px',  
+      'custom-big': '30px', 
     },
     maxHeight: {
+      "50": "50%",
+      "80": "80%", 
       "85": "85%", 
+      "90": "90%", 
     },
   },
   plugins: [gluestackPlugin],
