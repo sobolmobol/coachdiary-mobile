@@ -1,156 +1,434 @@
 import {
-    Actionsheet,
-    ActionsheetFlatList,  
-    ActionsheetContent,
-    ActionsheetItem,
-    ActionsheetItemText,
-    ActionsheetDragIndicator,
-    ActionsheetDragIndicatorWrapper,
-    ActionsheetBackdrop,
-    ActionsheetScrollView,
-    ActionsheetSectionList,
-    ActionsheetSectionHeaderText,
-} from "@/components/ui/actionsheet"
-import {AccordionClasses} from "@/components/Accordion";
-import { FlatList, View, Text } from "react-native"
-import React, {useState} from "react"
-import { Class } from '@/types/types'
-import { CustomButton } from "@/components/Button";
-import { Divider } from "./ui/divider";
+  Actionsheet,
+  ActionsheetFlatList,
+  ActionsheetContent,
+  ActionsheetItem,
+  ActionsheetItemText,
+  ActionsheetDragIndicator,
+  ActionsheetDragIndicatorWrapper,
+  ActionsheetBackdrop,
+  ActionsheetScrollView,
+  ActionsheetSectionList,
+  ActionsheetSectionHeaderText,
+} from '@/components/ui/actionsheet'
+import { HStack } from "@/components/ui/hstack"
+import {
+  Checkbox,
+  CheckboxIndicator,
+  CheckboxLabel,
+  CheckboxIcon,
+  CheckboxGroup,
+} from "@/components/ui/checkbox"
+import { CheckIcon } from "@/components/ui/icon"
+import {
+  Radio,
+  RadioGroup,
+  RadioIndicator,
+  RadioLabel,
+  RadioIcon,
+} from "@/components/ui/radio"
+import { AccordionClasses } from '@/components/Accordion'
+import { FlatList, View, Text } from 'react-native'
+import React, { useState } from 'react'
+import { ClassResponse, StudentResponse, FilterType, Gender } from '@/types/types'
+import { CustomButton } from '@/components/Button'
+import { Divider } from './ui/divider'
+import { Input, InputField } from './ui/input'
+import { CircleIcon } from "@/components/ui/icon"
 
 type ItemData = {
-    id: number;
-    standard: string;
-};
+  id: number
+  standard: string
+}
 
 type ItemProps = {
-    item: ItemData;
-    onPress: () => void;
-    backgroundColorStyle: string;
-    textColorStyle: string;
-};
-
+  item: ItemData
+  onPress: () => void
+  backgroundColorStyle: string
+  textColorStyle: string
+}
+type LevelItemProps = {
+  item: number
+  onPress?: () => void
+  backgroundColorStyle: string
+  textColorStyle: string
+}
 
 function ActionSheet({
-    isFilter = false,
-    isClasses = false, 
-    isStandards = false, 
-    standards = [], 
-    classes = [], 
-    handleClose, 
-    selectedClass,
-    setSelectedClass,
-    selectedStandard,
-    setSelectedStandard,
-    ...props} : {
-        isFilter?: boolean,
-        isClasses?: boolean,
-        isStandards?: boolean,
-        standards?: ItemData[], 
-        classes?: Class[],
-        handleClose: () => void;
-        selectedClass?: {
-            class_number: number,
-            class_letter: string
-        },
-        setSelectedClass?: (selectedStandard: {
-            class_number: number,
-            class_letter: string
-        }) => void,
-        selectedStandard?: {
-            id: number,
-            standard: string
-        },
-        setSelectedStandard?: (selectedStandard: {
-            id: number,
-            standard: string
-        }) => void,
-        }
-        & React.ComponentProps<typeof Actionsheet>
-    ){
-        const Item = React.useCallback(({ item, onPress, backgroundColorStyle, textColorStyle } : ItemProps) => (
-            <ActionsheetItem onPress={onPress} className={`p-4 rounded-custom ${backgroundColorStyle}`}>
-                <ActionsheetItemText className={`text-xs ${textColorStyle}`}>{ item.standard }</ActionsheetItemText>
-            </ActionsheetItem >
-        ), [])   
-        const renderItem = React.useCallback(({ item }: { item: ItemData }) => {
-            const backgroundColor = item.id === selectedStandard?.id ? 'bg-primary-0' : 'bg-background-0';
-            const color = item.id === selectedStandard?.id ? 'text-typography-0' : 'text-typography-1';
-            return (
-                <Item
-                    item={item}
-                    onPress={() => {
-                        if (setSelectedStandard) {
-                            setSelectedStandard({
-                                id: item.id,
-                                standard: item.standard
-                            });
-                        }
+  isFilter = false,
+  isClasses = false,
+  isStandards = false,
+  standards = [],
+  classes = [],
+  handleClose,
+  selectedClass,
+  setSelectedClass,
+  selectedStandard,
+  setSelectedStandard,
+  isLoading = false,
+  isStudentInfo = false,
+  isYear = false,
+  info,
+  deleteStudent,
+  levels,
+  selectedLevel,
+  setSelectedLevel,
+  yearFrom = null,
+  setYearFrom,
+  yearBefore = null,
+  setYearBefore,
+  gender = null,
+  setGender,
+  grades = [],
+  setGrades,
+  onFiltersAccept,
+  cancelFilters,
+  ...props
+}: {
+  isFilter?: boolean
+  isClasses?: boolean
+  isStandards?: boolean
+  isStudentInfo?: boolean
+  standards?: ItemData[]
+  classes?: ClassResponse[]
+  handleClose: () => void
+  selectedClass?: {
+    class_number: number
+    class_letter: string
+  }
+  setSelectedClass?: (selectedStandard: {
+    class_number: number
+    class_letter: string
+  }) => void
+  selectedStandard?: {
+    id: number
+    standard: string
+  }
+  setSelectedStandard?: (selectedStandard: {
+    id: number
+    standard: string
+  }) => void
+  isLoading?: Boolean
+  isYear?: Boolean
+  info?: StudentResponse,
+  levels?: number[]
+  deleteStudent?: () => void
+  selectedLevel?: number
+  setSelectedLevel?: (selectedLevel: number) => void
+  yearFrom?: number | null
+  setYearFrom?: (yearFrom: number | null) => void
+  yearBefore?: number | null
+  setYearBefore?: (yearFrom: number | null) => void
+  gender?: Gender | null,
+  setGender?: (gender: Gender | null) => void
+  grades?: string[]
+  setGrades?: (grades: string[]) => void
+  onFiltersAccept?: () => void
+  cancelFilters?: () => void
+} & React.ComponentProps<typeof Actionsheet>) {
+
+  const Item = React.useCallback(
+    ({ item, onPress, backgroundColorStyle, textColorStyle }: ItemProps) => (
+      <ActionsheetItem
+        onPress={onPress}
+        className={`w-64 p-2 rounded-custom-big border border-primary-0 my-1 ${backgroundColorStyle}`}
+      >
+        <ActionsheetItemText className={`text-xs ${textColorStyle} font-medium`}>
+          {item.standard}
+        </ActionsheetItemText>
+      </ActionsheetItem>
+    ),
+    []
+  )
+
+  const renderItem = React.useCallback(
+    ({ item }: { item: ItemData }) => {
+      const backgroundColor =
+        item.id === selectedStandard?.id ? 'bg-primary-0' : 'bg-background-1'
+      const color =
+        item.id === selectedStandard?.id
+          ? 'text-background-1'
+          : 'text-typography-1'
+      return (
+        <Item
+          item={item}
+          onPress={() => {
+            if (setSelectedStandard) {
+              setSelectedStandard({
+                id: item.id,
+                standard: item.standard,
+              })
+            }
+          }}
+          backgroundColorStyle={backgroundColor}
+          textColorStyle={color}
+        />
+      )
+    },
+    [selectedStandard, setSelectedStandard]
+  )
+
+  const LevelItem = React.useCallback(
+    ({ item, onPress, backgroundColorStyle, textColorStyle }: LevelItemProps) => (
+      <ActionsheetItem
+        onPress={onPress}
+        className={`w-64 p-2 rounded-custom-big border border-primary-0 my-1 ${backgroundColorStyle}`}
+      >
+        <ActionsheetItemText className={`text-xs ${textColorStyle} font-medium text-center`}>
+          {`${item} класс`}
+        </ActionsheetItemText>
+      </ActionsheetItem>
+    ),
+    []
+  )
+
+  const renderLevelItem = React.useCallback(
+    ({ item }: { item: number }) => {
+      const backgroundColor =
+        item === selectedLevel ? 'bg-primary-0' : 'bg-background-1'
+      const color =
+        item === selectedLevel
+          ? 'text-background-1'
+          : 'text-typography-1'
+      return (
+        <LevelItem
+          item={item}
+          onPress={() => {
+            if (setSelectedLevel) {
+              setSelectedLevel(item)
+            }
+          }}
+          backgroundColorStyle={backgroundColor}
+          textColorStyle={color}
+        />
+      )
+    },
+    [selectedLevel, setSelectedLevel]
+  )
+  function setYearBeforeChecked(text: string) {
+    if(!setYearBefore) return
+    let value = +text.slice(0, 4); 
+    if (text.length === 4) {
+      if (value >= 1970 && value <= 2025) {
+        setYearBefore(value);
+      } else {
+        setYearBefore(2025);
+      }
+    } else {
+      setYearBefore(value);
+    } 
+  }
+  function setYearFromChecked(text: string) {
+    if(!setYearFrom) return
+    let value = +text.slice(0, 4); 
+  
+    if (text.length === 4) {
+      if (value >= 1970 && value <= 2025) {
+        setYearFrom(value);
+      } else {
+        setYearFrom(1970);
+      }
+    } else {
+      setYearFrom(value);
+    } 
+  }
+  return (
+    <Actionsheet {...props}>
+      <ActionsheetBackdrop />
+      <ActionsheetContent className="bg-background-1 rounded-t-custom-big border-0">
+        <ActionsheetDragIndicatorWrapper>
+          <ActionsheetDragIndicator className="bg-primary-0 rounded-custom-big" />
+          <View className='my-2 w-full flex items-center'>
+            <Text className='font-extrabold text-m text-start text-primary-0'> {isClasses ? 'Классы' : isStandards ? 'Нормативы' : isFilter ? 'Фильтры' : isStudentInfo ? 'Информация об ученике' : 'Класс'} </Text>
+          </View>
+          <Divider
+            className="w-full my-0.5 bg-primary-0/20"
+            orientation="horizontal"
+          />
+        </ActionsheetDragIndicatorWrapper>
+        {isStandards &&
+          (standards.length !== 0 ? (
+            <FlatList
+              data={standards}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id.toString()}
+              contentContainerClassName='flex items-center'
+            />
+          ) : (
+            <ActionsheetScrollView>
+              <ActionsheetItem>
+                <ActionsheetItemText className="text-typography-1 text-xs">
+                  После выбора класса здесь появится список нормативов для него
+                </ActionsheetItemText>
+              </ActionsheetItem>
+            </ActionsheetScrollView>
+          ))}
+        {isClasses && (
+          <ActionsheetScrollView>
+            {isLoading ? 
+            <Text>Загрузка классов...</Text> : 
+            <AccordionClasses
+              className="flex justify-center m-3 w-[95%] text-typography-0"
+              selectedClass={selectedClass}
+              setSelectedClass={setSelectedClass}
+              classes={classes}
+              handleClose={handleClose}
+          />}
+          </ActionsheetScrollView>
+        )}
+        {isFilter && (
+          <ActionsheetScrollView>
+            <View className='flex w-full gap-2 p-2'>
+              <Text className="text-center text-typography-1 font-bold text-s">Пол</Text>
+              <RadioGroup value={gender ?? ''} onChange={setGender}>
+                <View className='flex-row justify-between'>
+                  <Radio value="f">
+                    <RadioIndicator className="border-primary-0 rounded-custom-big">
+                      <RadioIcon className='border-primary-0' as={CircleIcon} />
+                    </RadioIndicator>
+                    <RadioLabel><Text className='text-typography-1 text-s font-semibold'>Девочки</Text></RadioLabel>
+                  </Radio>
+                  <Radio value="m">
+                    <RadioIndicator className="border-primary-0 rounded-custom-big">
+                      <RadioIcon className='border-primary-0' as={CircleIcon} />
+                    </RadioIndicator>
+                    <RadioLabel><Text className='text-typography-1 text-s font-semibold'>Мальчики</Text></RadioLabel>
+                  </Radio>
+                </View>
+              </RadioGroup>
+              <Divider
+                className="w-full my-0.5 bg-primary-0/20"
+                orientation="horizontal"
+              />
+            </View>
+            <View className='flex w-full gap-2 p-2'>
+              <Text className="text-center text-typography-1 font-bold text-s">Оценка</Text>
+              <CheckboxGroup
+                value={grades ?? ''}
+                onChange={(keys) => {
+                  if(setGrades) setGrades(keys)
+                }}>
+                <View className='flex-row justify-between'>
+                  <Checkbox value='2'>
+                    <CheckboxIndicator className="border-error-0">
+                      <CheckboxIcon className="text-error-0" as={CheckIcon} />
+                    </CheckboxIndicator>
+                    <CheckboxLabel><Text className='text-error-0 font-semibold'>2</Text></CheckboxLabel>
+                  </Checkbox>
+                  <Checkbox value='3'>
+                    <CheckboxIndicator className="border-warning-0/70">
+                      <CheckboxIcon className="text-warning-0/70" as={CheckIcon} />
+                    </CheckboxIndicator>
+                    <CheckboxLabel><Text className='text-warning-0/70 font-semibold'>3</Text></CheckboxLabel>
+                  </Checkbox>
+                  <Checkbox value='4'>
+                    <CheckboxIndicator className="border-info-0">
+                      <CheckboxIcon className="text-info-0" as={CheckIcon} />
+                    </CheckboxIndicator>
+                    <CheckboxLabel><Text className='text-info-0 font-semibold'>4</Text></CheckboxLabel>
+                  </Checkbox>
+                  <Checkbox value='5' key={'5'}>
+                    <CheckboxIndicator className="border-success-0/80">
+                      <CheckboxIcon className="text-success-0/80" as={CheckIcon} />
+                    </CheckboxIndicator>
+                    <CheckboxLabel><Text className='text-success-0/80 font-semibold'>5</Text></CheckboxLabel>
+                  </Checkbox>
+                </View>
+              </CheckboxGroup>
+              <Divider
+                className="w-full my-0.5 bg-primary-0/20"
+                orientation="horizontal"
+              />
+            </View>
+            <View className='flex w-full gap-2 p-2'>
+              <Text className="text-center text-typography-1 font-bold text-s">Год рождения</Text>
+              <View className='w-full flex-row justify-between items-center p-2'>
+                <Text className="text-typography-1 font-bold text-xs">От</Text>
+                <Input className="w-[35%] rounded-custom border-tertiary-0/50 bg-tertiary-0/30">
+                  <InputField
+                    className="text-typography-1"
+                    placeholder="От"
+                    value={yearFrom ? yearFrom.toString() : ''}
+                    onChangeText={(text) => {
+                      setYearFromChecked(text)
                     }}
-                    backgroundColorStyle={backgroundColor}
-                    textColorStyle={color}
+                  />
+                </Input>
+                <Text className="text-typography-1 font-bold text-xs">До</Text>
+                <Input className="w-[35%] rounded-custom border-tertiary-0/50 bg-tertiary-0/30">
+                  <InputField
+                    className="text-typography-1"
+                    placeholder="До"
+                    value={yearBefore ? yearBefore.toString() : ''}
+                    onChangeText={(text) => {
+                      setYearBeforeChecked(text)
+                    }}
+                  />
+                </Input>
+              </View>
+            </View>
+            <View className="w-full flex-row justify-between p-2 mt-2">
+              <CustomButton
+                classNameText="text-background-1"
+                color='red'
+                size='xs'
+                buttonText='Сбросить'
+                isFontSizeChangable={false}
+                onPress={cancelFilters}
+              />
+              <CustomButton
+                classNameText="text-background-1"
+                color='green'
+                size='xs'
+                buttonText='Применить фильтры'
+                isFontSizeChangable={false}
+                onPress={onFiltersAccept}
+              />  
+            </View>   
+          </ActionsheetScrollView>
+        )}
+        {isStudentInfo && (
+          <ActionsheetScrollView>
+            <View className='flex items-center w-full'>
+              <View className='w-[94%] p-1 rounded-custom border-2 border-primary-0 my-1'>
+                <Text className='text-xs text-primary-0 font-bold text-center'>{`Дата рождения: ${info?.birthday}`}</Text>
+              </View>
+              <View className='w-[94%] p-1 rounded-custom border-2 border-primary-0 my-1'>
+                <Text className='text-xs text-primary-0 font-bold text-center'>{`Класс: ${info?.student_class.number} ${info?.student_class.class_name}`}</Text>
+              </View>
+              <View className='w-[94%] p-1 rounded-custom border-2 border-primary-0 my-1'>
+                <Text className='text-xs text-primary-0 font-bold text-center'>{`Пол: ${info?.gender == 'f' ? "женский" : "мужской"}`}</Text>
+              </View>  
+              <View className="w-full flex-row justify-around p-2 mt-2">
+                <CustomButton
+                  classNameText="text-background-1"
+                  color='green'
+                  size='xs'
+                  buttonText='Изменить информацию'
+                  isFontSizeChangable={false}
                 />
-            );
-        }, [selectedStandard, setSelectedStandard]);
-        return(
-            <Actionsheet {...props} >
+                <CustomButton
+                  classNameText="text-background-1"
+                  color='red'
+                  size='xs'
+                  buttonText='Удалить ученика'
+                  isFontSizeChangable={false}
+                  onPress={deleteStudent}
+                />  
+              </View>         
+            </View>
+          </ActionsheetScrollView>
+        )}
+        {isYear &&
+          <FlatList
+            data={levels}
+            renderItem={renderLevelItem}
+            keyExtractor={(item) => item.toString()}
+            contentContainerClassName='flex items-center'
+          />}
+      </ActionsheetContent>
+    </Actionsheet>
+  )
+}
 
-                <ActionsheetBackdrop />
-                <ActionsheetContent className="bg-background-0 rounded-t-custom-big border-background-0">
-                    <ActionsheetDragIndicatorWrapper >
-                        <ActionsheetDragIndicator className="bg-primary-0 rounded-custom" />
-                    </ActionsheetDragIndicatorWrapper>
-                    {isStandards && 
-                    (
-                        standards.length !== 0 ?
-                        <FlatList
-                            data={standards}
-                            renderItem={renderItem}
-                            keyExtractor={item => item.id.toString()}
-                        /> : 
-                        <ActionsheetScrollView>
-                            <ActionsheetItem>
-                                <ActionsheetItemText className="text-typography-1 text-xs">
-                                    После выбора класса здесь появится список нормативов для него
-                                </ActionsheetItemText>
-                            </ActionsheetItem>
-                        </ActionsheetScrollView>
-                    )}
-                    {isClasses && 
-                    (
-                    <ActionsheetScrollView> 
-                        <AccordionClasses 
-                            className="flex justify-center m-3 w-[95%] text-typography-0" 
-                            selectedClass={selectedClass}
-                            setSelectedClass={setSelectedClass} 
-                            classes={classes}
-                            handleClose={handleClose}
-                        /> 
-                    </ActionsheetScrollView>
-                    )}       
-                    {isFilter && 
-                    (
-                    <ActionsheetScrollView> 
-                        <View>
-                            <Text className="text-center text-typography-1 font-bold text-s"> Пол </Text>
-                            <View className="w-full flex-row justify-between p-4">
-                                <CustomButton buttonText="мальчики" color="non" variant="outline" size="md" className="border-primary-0 rounded-custom"></CustomButton>
-                                <CustomButton buttonText="девочки" color="non" variant="outline" size="md" className="border-primary-0 rounded-custom"></CustomButton>
-                            </View>
-                            <Divider/>
-                        </View>
-                        <View>
-                            <Text className="text-center text-typography-1 font-bold text-s"> Оценка </Text>
-                            <Divider/>
-                        </View>
-                        <View>
-                            <Text className="text-center text-typography-1 font-bold text-s">Год рождения </Text>
-                        </View>
-                    </ActionsheetScrollView>
-                    )}  
-                </ActionsheetContent>
-            </Actionsheet>
-        )
-    }
-
-    export { ActionSheet };
+export { ActionSheet }

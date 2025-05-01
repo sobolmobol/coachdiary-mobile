@@ -1,9 +1,9 @@
-import gluestackPlugin from '@gluestack-ui/nativewind-utils/tailwind-plugin';
+import gluestackPlugin from '@gluestack-ui/nativewind-utils/tailwind-plugin'
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: "media",
-  content: ["./app/**/*.{tsx,jsx,ts,js}", "components/**/*.{tsx,jsx,ts,js}"],
+  darkMode: 'media',
+  content: ['./app/**/*.{tsx,jsx,ts,js}', 'components/**/*.{tsx,jsx,ts,js}'],
   presets: [require('nativewind/preset')],
   safelist: [
     {
@@ -19,6 +19,7 @@ module.exports = {
         },
         secondary: {
           0: 'rgb(var(--color-secondary-0)/<alpha-value>)',
+          1: 'rgb(var(--color-secondary-1)/<alpha-value>)',
         },
         tertiary: {
           0: 'rgb(var(--color-tertiary-0)/<alpha-value>)',
@@ -74,10 +75,10 @@ module.exports = {
       fontSize: {
         '3xs': '8px',
         '2xs': '12px',
-        'xs' : '14px',
-        's' : '16px',
-        'm' : '18px',
-        'l' : '22px',
+        xs: '14px',
+        s: '16px',
+        m: '18px',
+        l: '22px',
       },
       boxShadow: {
         'hard-1': '-2px 2px 8px 0px rgba(38, 38, 38, 0.20)',
@@ -92,15 +93,15 @@ module.exports = {
       },
     },
     borderRadius: {
-      'custom': '8px',  
-      'custom-big': '30px', 
+      custom: '8px',
+      'custom-big': '30px',
     },
     maxHeight: {
-      "50": "50%",
-      "80": "80%", 
-      "85": "85%", 
-      "90": "90%", 
+      50: '50%',
+      80: '80%',
+      85: '85%',
+      90: '90%',
     },
   },
   plugins: [gluestackPlugin],
-};
+}

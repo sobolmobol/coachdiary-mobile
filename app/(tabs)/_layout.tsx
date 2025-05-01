@@ -1,28 +1,29 @@
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { Tabs } from 'expo-router';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6'
+import Ionicons from '@expo/vector-icons/Ionicons'
+import { Tabs } from 'expo-router'
 import { useColorScheme } from 'react-native'
-import { config } from '@/components/ui/gluestack-ui-provider/config';
-import { vars } from 'nativewind';
+import { config } from '@/components/ui/gluestack-ui-provider/config'
+import { vars } from 'nativewind'
 //import { config } from '@/components/ui/gluestack-ui-provider/index';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme()
   return (
-    <Tabs screenOptions={{ 
-      headerStyle: {
-        backgroundColor: '#003F50',
-      },
-      headerTitleAlign: 'center',
-      headerTintColor: '#f0f8ff',
-      tabBarActiveTintColor: '#E5AA7B',     
-      tabBarInactiveTintColor: '#f0f8ff',
-      tabBarStyle: {
-        backgroundColor: '#003F50', 
-        padding: 10,  
-      },
-      /*tabBarActiveTintColor: `rgb(var(${config[colorScheme ?? 'light']['--color-tertiary']}))`,  
+    <Tabs
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#003F50',
+        },
+        headerTitleAlign: 'center',
+        headerTintColor: '#f0f8ff',
+        tabBarActiveTintColor: '#E5AA7B',
+        tabBarInactiveTintColor: '#f0f8ff',
+        tabBarStyle: {
+          backgroundColor: '#003F50',
+          padding: 10,
+        },
+        /*tabBarActiveTintColor: `rgb(var(${config[colorScheme ?? 'light']['--color-tertiary']}))`,  
       tabBarInactiveTintColor: `rgb(var(${config[colorScheme ?? 'light']['--color-typography-0']}))`,
       tabBarStyle: {
         backgroundColor: `rgb(${config[colorScheme ?? 'light']['--color-primary']})`, 
@@ -30,35 +31,48 @@ export default function TabLayout() {
         borderTopRightRadius: 8, 
         padding: 10,  
       },*/
-      }}>
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name="(diary)"
         options={{
           title: 'Дневник',
-          tabBarIcon: ({ color }) => <MaterialCommunityIcons name="notebook-edit" size={24} color={color}  />,
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons
+              name="notebook-edit"
+              size={24}
+              color={color}
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="classes"
         options={{
           title: 'Мои классы',
-          tabBarIcon: ({ color }) => <FontAwesome6 name="people-group" size={24} color={color} />,
+          tabBarIcon: ({ color }) => (
+            <FontAwesome6 name="people-group" size={24} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
         name="standards"
         options={{
           title: 'Мои нормативы',
-          tabBarIcon: ({ color }) => <FontAwesome6 name="person-running" size={24} color={color} />,
+          tabBarIcon: ({ color }) => (
+            <FontAwesome6 name="person-running" size={24} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Мой профиль',
-          tabBarIcon: ({ color }) => <Ionicons name="person-sharp" size={24} color={color} />,
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="person-sharp" size={24} color={color} />
+          ),
         }}
       />
     </Tabs>
-  );
+  )
 }
