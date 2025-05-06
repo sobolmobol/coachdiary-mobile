@@ -1,19 +1,19 @@
-import { Alert } from 'react-native';
-import {refreshToken} from './user'
+import { Alert } from 'react-native'
+import { refreshToken } from './user'
 import { getItem, setItem } from '@/store/secureStorage'
-import { router } from 'expo-router';
+import { router } from 'expo-router'
 
-const apiBase = process.env.EXPO_PUBLIC_API_BASE;
+const apiBase = process.env.EXPO_PUBLIC_API_BASE
 
-async function getAccessToken(){
-  return await getItem('accessToken');
+async function getAccessToken() {
+  return await getItem('accessToken')
 }
 
 export async function get(
   url: string,
   data?: Record<string | number, unknown | unknown[]>
 ): Promise<Response> {
-  const urlObj = new URL(apiBase + url);
+  const urlObj = new URL(apiBase + url)
   for (const key in data) {
     if (Array.isArray(data[key])) {
       for (const item of data[key] as unknown[]) {
@@ -23,100 +23,104 @@ export async function get(
       urlObj.searchParams.append(key, data[key]?.toString() ?? '')
     }
   }
-  const accessToken = await getAccessToken();
+  const accessToken = await getAccessToken()
   const response = await fetch(urlObj.toString(), {
     method: 'GET',
     headers: {
-      'Authorization': `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
       'Content-Type': 'application/json',
     },
   })
-  if(response.status===401){
-    Alert.alert("Время перезойти в аккаунт!");
-    router.replace('/login');
-  } 
-  return response;
+  if (response.status === 401) {
+    Alert.alert('Время перезойти в аккаунт!')
+    router.replace('/login')
+  }
+  return response
 }
 
 export async function post(
   url: string,
   data?: Record<string | number, unknown> | unknown[]
 ): Promise<Response> {
-  const accessToken = await getAccessToken();
+  const accessToken = await getAccessToken()
   const response = await fetch(apiBase + url, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
       'Content-Type': 'application/json',
     },
     body: data ? JSON.stringify(data) : undefined,
   })
-  if(response.status===401){
-    Alert.alert("Время перезойти в аккаунт!");
-    router.replace('/login');
-  } 
-  return response;
+  if (response.status === 401) {
+    Alert.alert('Время перезойти в аккаунт!')
+    router.replace('/login')
+  }
+  return response
 }
 
 export async function put(
   url: string,
   data?: Record<string | number, unknown>
 ): Promise<Response> {
-  const accessToken = await getAccessToken();
+  const accessToken = await getAccessToken()
   const response = await fetch(apiBase + url, {
     method: 'PUT',
     headers: {
-      'Authorization': `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
       'Content-Type': 'application/json',
     },
     body: data ? JSON.stringify(data) : undefined,
   })
-  if(response.status===401){
-    Alert.alert("Время перезойти в аккаунт!");
-    router.replace('/login');
-  } 
-  return response;
+  if (response.status === 401) {
+    Alert.alert('Время перезойти в аккаунт!')
+    router.replace('/login')
+  }
+  return response
 }
 
 export async function patch(
   url: string,
   data?: Record<string | number, unknown>
 ): Promise<Response> {
-  const accessToken = await getAccessToken();
+  const accessToken = await getAccessToken()
   const response = await fetch(apiBase + url, {
     method: 'PATCH',
     headers: {
-      'Authorization': `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
       'Content-Type': 'application/json',
     },
     body: data ? JSON.stringify(data) : undefined,
   })
-  if(response.status===401){
-    Alert.alert("Время перезойти в аккаунт!");
-    router.replace('/login');
-  } 
-  return response;
+  if (response.status === 401) {
+    Alert.alert('Время перезойти в аккаунт!')
+    router.replace('/login')
+  }
+  return response
 }
 
 export async function del(url: string): Promise<Response> {
-  const accessToken = await getAccessToken();
+  const accessToken = await getAccessToken()
   const response = await fetch(apiBase + url, {
     method: 'DELETE',
     headers: {
-      'Authorization': `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
       'Content-Type': 'application/json',
     },
   })
-  if(response.status===401){
-    Alert.alert("Время перезойти в аккаунт!");
-    router.replace('/login');
-  } 
-  return response;
+  if (response.status === 401) {
+    Alert.alert('Время перезойти в аккаунт!')
+    router.replace('/login')
+  }
+  return response
 }
 
-export function flattenObject(obj: any, parentKey: string = '', result: Record<string, any> = {}): Record<string, any> {
+export function flattenObject(
+  obj: any,
+  parentKey: string = '',
+  result: Record<string, any> = {}
+): Record<string, any> {
   if (typeof obj === 'string' && parentKey === '') {
-    return {obj}
+    return { obj }
   }
   for (const key in obj) {
     if (obj.hasOwnProperty(key)) {

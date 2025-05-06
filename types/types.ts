@@ -5,14 +5,16 @@ export type StandardResponse = {
   id: number
   name: string
   has_numeric_value: boolean
-  levels: {
-    id: number
-    level_number: number
-    low_level_value: number
-    middle_level_value: number
-    high_level_value: number
-    gender: Gender
-  }[]
+  levels: 
+    {
+      id: number
+      is_lower_better: boolean
+      level_number: number
+      low_value: number
+      middle_value: number
+      high_value: number
+      gender: Gender
+    }[]   
 }
 
 export type StandardRequest = {
@@ -25,17 +27,6 @@ export type StandardRequest = {
     high_level_value: number | null
     gender: Gender
   }[]
-}
-
-
-export type StudentRequest = {
-  full_name: string
-  student_class: {
-    number: number
-    class_name: string
-  }
-  birthday: string
-  gender: Gender
 }
 
 export type ClassResponse = {
@@ -128,12 +119,12 @@ export type StudentResponse = {
   patronymic: string
   full_name: string
   student_class: {
-    id: number,
-    class_name: string,
-    number: number,
+    id: number
+    class_name: string
+    number: number
     recruitment_year: number
-  },
-  birthday: string,
+  }
+  birthday: string
   gender: Gender
 }
 export type StudentStandardResponse = {
@@ -153,4 +144,28 @@ export type FilterType = {
     from: number | null
     before: number | null
   } | null
+}
+
+export type StudentRequest = {
+  id: number
+  first_name: string
+  last_name: string
+  patronymic: string
+  student_class: {
+    class_name: string
+    number: number
+  }
+  birthday: string
+  gender: Gender
+}
+export type NewStudentRequest = {
+  first_name: string
+  last_name: string
+  patronymic: string
+  student_class: {
+    class_name: string
+    number: number
+  }
+  birthday: string
+  gender: Gender
 }

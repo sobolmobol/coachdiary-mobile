@@ -40,19 +40,30 @@ function AccordionClasses({
   handleClose: () => void
 } & React.ComponentProps<typeof Accordion>) {
   const groupClasses = (classes: ClassResponse[]) => {
-    return Object.values(classes.reduce((acc: Record<number, { class_number: number; class_letters: string[] }>, curr) => {
-      const { class_name, number } = curr;
-      if (!acc[number]) {
-        acc[number] = {
-          class_number: number,
-          class_letters: [],
-        };
-      }
-      if (!acc[number].class_letters.includes(class_name)) {
-        acc[number].class_letters.push(class_name);
-      }
-      return acc;
-    }, {} as Record<number, { class_number: number; class_letters: string[] }>))
+    return Object.values(
+      classes.reduce(
+        (
+          acc: Record<
+            number,
+            { class_number: number; class_letters: string[] }
+          >,
+          curr
+        ) => {
+          const { class_name, number } = curr
+          if (!acc[number]) {
+            acc[number] = {
+              class_number: number,
+              class_letters: [],
+            }
+          }
+          if (!acc[number].class_letters.includes(class_name)) {
+            acc[number].class_letters.push(class_name)
+          }
+          return acc
+        },
+        {} as Record<number, { class_number: number; class_letters: string[] }>
+      )
+    )
   }
   const Item = ({
     item,
@@ -62,7 +73,8 @@ function AccordionClasses({
   }: ItemProps) => (
     <TouchableOpacity
       onPress={onPress}
-      className={`p-4 rounded-custom ${backgroundColorStyle}`}>
+      className={`p-4 rounded-custom ${backgroundColorStyle}`}
+    >
       <Text className={`text-xs font-bold ${textColorStyle}`}>{item}</Text>
     </TouchableOpacity>
   )
@@ -106,7 +118,11 @@ function AccordionClasses({
       className="bg-background-1"
     >
       {groupClasses(classes).map((item) => (
-        <AccordionItem className="bg-background-1" value={item.class_number.toString()} key={`item-${item.class_number}`}>
+        <AccordionItem
+          className="bg-background-1"
+          value={item.class_number.toString()}
+          key={`item-${item.class_number}`}
+        >
           <AccordionHeader>
             <AccordionTrigger>
               {({ isExpanded }) => (

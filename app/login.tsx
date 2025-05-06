@@ -7,7 +7,7 @@ import { EyeIcon, EyeOffIcon } from '@/components/ui/icon'
 import { CustomButton } from '@/components/Button'
 import { Link, LinkText } from '@/components/ui/link'
 import { useRouter } from 'expo-router'
-import {login, getIsLoggedInState} from '@/services/user'
+import { login, getIsLoggedInState } from '@/services/user'
 export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState('')
@@ -17,7 +17,7 @@ export default function LoginScreen() {
     return password.length === 0 || email.length === 0
   }
   async function signIn() {
-    await login(email.trim(), password, router);
+    await login(email.trim(), password, router)
   }
   const handleState = () => {
     setShowPassword((showState) => {
@@ -48,6 +48,7 @@ export default function LoginScreen() {
                   className="text-typography-1"
                   placeholder="Почта"
                   value={email}
+                  keyboardType="email-address"
                   onChangeText={(text: string) => {
                     setEmail(text)
                   }}
@@ -91,7 +92,9 @@ export default function LoginScreen() {
                 />
               </View>
               <View className="flex justify-start items-center gap-1">
-                <Text className="text-typography-1">У вас еще нет аккаунта?</Text>
+                <Text className="text-typography-1">
+                  У вас еще нет аккаунта?
+                </Text>
                 <Link onPress={() => router.push('/register')}>
                   <LinkText className="text-typography-1">
                     Зарегистрируйтесь.

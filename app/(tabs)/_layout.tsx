@@ -23,14 +23,6 @@ export default function TabLayout() {
           backgroundColor: '#003F50',
           padding: 10,
         },
-        /*tabBarActiveTintColor: `rgb(var(${config[colorScheme ?? 'light']['--color-tertiary']}))`,  
-      tabBarInactiveTintColor: `rgb(var(${config[colorScheme ?? 'light']['--color-typography-0']}))`,
-      tabBarStyle: {
-        backgroundColor: `rgb(${config[colorScheme ?? 'light']['--color-primary']})`, 
-        borderTopLeftRadius: 8, 
-        borderTopRightRadius: 8, 
-        padding: 10,  
-      },*/
       }}
     >
       <Tabs.Screen
@@ -47,7 +39,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="classes"
+        name="(classes)"
         options={{
           title: 'Мои классы',
           tabBarIcon: ({ color }) => (
@@ -56,7 +48,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="standards"
+        name="(standards)"
         options={{
           title: 'Мои нормативы',
           tabBarIcon: ({ color }) => (

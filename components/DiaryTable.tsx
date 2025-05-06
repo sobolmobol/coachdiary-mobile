@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/table'
 import { Input, InputField } from '@/components/ui/input'
 import { StudentsValueResponse } from '@/types/types'
-import {useEffect, useState, useMemo} from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { View, ScrollView, Text } from 'react-native'
 import { CustomButton } from '@/components/Button'
@@ -40,9 +40,10 @@ function DiaryTable({
   standardType: string
   onStudentsChange: (updStudents: StudentsValueResponse[]) => void
 } & React.ComponentProps<typeof Table>) {
-
   const [currentPage, setCurrentPage] = useState(1)
-  const [updatedStudents, setUpdatedStudents] = useState<StudentsValueResponse[]>([])
+  const [updatedStudents, setUpdatedStudents] = useState<
+    StudentsValueResponse[]
+  >([])
   const studentsPerPage = 7
   const totalPages = Math.ceil(updatedStudents.length / studentsPerPage)
   const currentStudents = updatedStudents.slice(
@@ -54,115 +55,130 @@ function DiaryTable({
       setCurrentPage(page)
     }
   }
-  const handleInputChange = (id: number, field: 'value' | 'grade', newValue: string) => {
-    if(Number.isNaN(+newValue)){
-      newValue='0'
+  const handleInputChange = (
+    id: number,
+    field: 'value' | 'grade',
+    newValue: string
+  ) => {
+    if (Number.isNaN(+newValue)) {
+      newValue = '0'
     }
-    setUpdatedStudents(updatedStudents.map((student) =>{
-      return student.id === id
-        ?
-         {
-            ...student,
-            [field]: +newValue 
-          }
-        : student}
-    ));
-  };
-  function saveData(){
-    onStudentsChange(updatedStudents);
+    setUpdatedStudents(
+      updatedStudents.map((student) => {
+        return student.id === id
+          ? {
+              ...student,
+              [field]: +newValue,
+            }
+          : student
+      })
+    )
   }
-  useEffect(() =>{
+  function saveData() {
+    onStudentsChange(updatedStudents)
+  }
+  useEffect(() => {
     setUpdatedStudents(students)
   }, [students])
   return (
     <Table className="w-full table-auto">
-<TableHeader>
-  <TableRow className="bg-primary-0/20 border-primary-0/50">
-    <TableHead className="text-typography-1 text-xs text-start px-1 py-2 flex-1 min-w-[50px]">
-      Класс
-    </TableHead>
-    <TableHead className="text-typography-1 text-xs text-start px-1 py-2 flex-[2] min-w-[100px]">
-      ФИО
-    </TableHead>
-    <TableHead className="text-xs text-left font-bold text-typography-2 px-1 py-2 flex-1 min-w-[30px]">
-      Пол
-    </TableHead>
-    {standardType === 'physical' && (
-      <TableHead className="text-typography-1 text-xs text-center px-1 py-2 flex-[1.5] min-w-[70px]">
-        Результат
-      </TableHead>
-    )}
-    <TableHead className="text-typography-1 text-xs text-center px-1 py-2 flex-1 min-w-[50px]">
-      Оценка
-    </TableHead>
-  </TableRow>
-</TableHeader>
+      <TableHeader>
+        <TableRow className="bg-primary-0/20 border-primary-0/50">
+          <TableHead className="text-typography-1 text-xs text-start px-1 py-2 flex-1 min-w-[50px]">
+            Класс
+          </TableHead>
+          <TableHead className="text-typography-1 text-xs text-start px-1 py-2 flex-[2] min-w-[100px]">
+            ФИО
+          </TableHead>
+          <TableHead className="text-xs text-left font-bold text-typography-2 px-1 py-2 flex-1 min-w-[30px]">
+            Пол
+          </TableHead>
+          {standardType === 'physical' && (
+            <TableHead className="text-typography-1 text-xs text-center px-1 py-2 flex-[1.5] min-w-[70px]">
+              Результат
+            </TableHead>
+          )}
+          <TableHead className="text-typography-1 text-xs text-center px-1 py-2 flex-1 min-w-[50px]">
+            Оценка
+          </TableHead>
+        </TableRow>
+      </TableHeader>
 
-<ScrollView className="w-full max-h-90">
-  <TableBody>
-    {currentStudents.map((student, index) => (
-      <TableRow
-        key={student.id}
-        className={`border-primary-0/50 flex flex-row ${index % 2 === 0 ? 'bg-background-1' : 'bg-primary-0/20'}`}
-      >
-        <TableData className="text-xs font-bold text-center text-typography-1 py-2 px-1 flex-1 min-w-[50px]">
-          {`${student.student_class.number}${student.student_class.class_name}`}
-        </TableData>
-
-        <TableData className="text-xs font-bold text-start text-typography-1 underline py-2 px-1 flex-[2] min-w-[100px]">
-          <Link
-            href={{
-              pathname: '/student/[id]',
-              params: { id: student.id },
-            }}
-          >
-            {getShortName(student.full_name)}
-          </Link>
-        </TableData>
-
-        <TableData className="text-xs font-bold text-center text-typography-1 py-2 px-2 flex-1 min-w-[30px]">
-          {student.gender === 'f' ? 'Ж' : 'М'}
-        </TableData>
-
-        {standardType === 'physical' ? (
-          <>
-            <TableData className="py-2 px-1 flex-[1.5] min-w-[70px]">
-              <Input variant="rounded" size="sm" className="rounded-custom w-[70%]">
-                <InputField
-                  className="text-s text-center font-extrabold text-typography-1"
-                  value={student.value?.toString() ?? ''}
-                  onChangeText={(text: string) => handleInputChange(student.id, 'value', text)}
-                />
-              </Input>
-            </TableData>
-
-            <TableData className="py-2 px-1 flex-1 min-w-[40px]">
-              <View className={`bg-${getGradeColor(student.grade ?? 0)} w-7 h-7 rounded-custom items-center justify-center`}>
-                <Text className="text-background-1 text-s font-extrabold text-center">
-                  {student.grade}
-                </Text>
-              </View>
-            </TableData>
-          </>
-        ) : (
-          <TableData className="py-2 px-1 flex-[1.5] min-w-[70px]">
-            <Input
-              variant="rounded"
-              size="sm"
-              className={`w-[70%] rounded-custom border-${getGradeColor(student.grade ?? 0)} `}
+      <ScrollView className="w-full max-h-90">
+        <TableBody>
+          {currentStudents.map((student, index) => (
+            <TableRow
+              key={student.id}
+              className={`border-primary-0/50 flex flex-row ${index % 2 === 0 ? 'bg-background-1' : 'bg-primary-0/20'}`}
             >
-              <InputField
-                className={`text-center font-extrabold text-s text-${getGradeColor(student.grade ?? 0)}`}
-                value={student.grade?.toString() ?? ''}
-                onChangeText={(text: string) => handleInputChange(student.id, 'grade', text)}
-              />
-            </Input>
-          </TableData>
-        )}
-      </TableRow>
-    ))}
-  </TableBody>
-</ScrollView>
+              <TableData className="text-xs font-bold text-center text-typography-1 py-2 px-1 flex-1 min-w-[50px]">
+                {`${student.student_class.number}${student.student_class.class_name}`}
+              </TableData>
+
+              <TableData className="text-xs font-bold text-start text-typography-1 underline py-2 px-1 flex-[2] min-w-[100px]">
+                <Link
+                  href={{
+                    pathname: '/student/[id]',
+                    params: { id: student.id },
+                  }}
+                >
+                  {getShortName(student.full_name)}
+                </Link>
+              </TableData>
+
+              <TableData className="text-xs font-bold text-center text-typography-1 py-2 px-2 flex-1 min-w-[30px]">
+                {student.gender === 'f' ? 'Ж' : 'М'}
+              </TableData>
+
+              {standardType === 'physical' ? (
+                <>
+                  <TableData className="py-2 px-1 flex-[1.5] min-w-[70px]">
+                    <Input
+                      variant="rounded"
+                      size="sm"
+                      className="rounded-custom w-[70%]"
+                    >
+                      <InputField
+                        className="text-s text-center font-extrabold text-typography-1"
+                        value={student.value?.toString() ?? ''}
+                        onChangeText={(text: string) =>
+                          handleInputChange(student.id, 'value', text)
+                        }
+                      />
+                    </Input>
+                  </TableData>
+
+                  <TableData className="py-2 px-1 flex-1 min-w-[40px]">
+                    <View
+                      className={`bg-${getGradeColor(student.grade ?? 0)} w-7 h-7 rounded-custom items-center justify-center`}
+                    >
+                      <Text className="text-background-1 text-s font-extrabold text-center">
+                        {student.grade}
+                      </Text>
+                    </View>
+                  </TableData>
+                </>
+              ) : (
+                <TableData className="py-2 px-1 flex-[1.5] min-w-[70px]">
+                  <Input
+                    variant="rounded"
+                    size="sm"
+                    className={`w-[70%] rounded-custom border-${getGradeColor(student.grade ?? 0)} `}
+                  >
+                    <InputField
+                      className={`text-center font-extrabold text-s text-${getGradeColor(student.grade ?? 0)}`}
+                      value={student.grade?.toString() ?? ''}
+                      onChangeText={(text: string) =>
+                        handleInputChange(student.id, 'grade', text)
+                      }
+                    />
+                  </Input>
+                </TableData>
+              )}
+            </TableRow>
+          ))}
+        </TableBody>
+      </ScrollView>
       <View className="w-full h-2">
         <TableFooter>
           <View className="flex-row justify-between items-center p-4 bg-primary-0/20">
@@ -171,7 +187,7 @@ function DiaryTable({
               buttonText="<"
               onPress={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              size='xs'
+              size="xs"
             />
             <Text className="text-typography-1 font-medium">{`Страница ${currentPage} из ${totalPages}`}</Text>
             <CustomButton
@@ -179,14 +195,14 @@ function DiaryTable({
               color="blue"
               onPress={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              size='xs'
+              size="xs"
             />
             <CustomButton
               buttonText="Сохранить"
               color="blue"
-              size='xs'
+              size="xs"
               onPress={() => saveData()}
-              classNameText='text-background-1'
+              classNameText="text-background-1"
             />
           </View>
         </TableFooter>

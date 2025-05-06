@@ -1,4 +1,4 @@
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from 'expo-secure-store'
 
 export const setItem = async (key: string, value: string) => {
   try {
@@ -25,5 +25,3 @@ export const removeItem = async (key: string) => {
     console.error('Error removing item:', error)
   }
 }
-
-

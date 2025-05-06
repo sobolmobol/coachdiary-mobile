@@ -13,7 +13,7 @@ export default function RootLayout() {
     const checkAuthState = async () => {
       const loggedIn = await getIsLoggedInState()
       setIsLoggedIn(loggedIn)
-      if (!loggedIn  && segments[0] !== 'login' && segments[0] !== 'register') {
+      if (!loggedIn && segments[0] !== 'login' && segments[0] !== 'register') {
         router.replace('/login')
       }
     }

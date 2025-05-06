@@ -10,7 +10,7 @@ import { logout } from '@/services/user'
 import { useRouter } from 'expo-router'
 
 export default function Profile() {
-  const [isProfileLoaded, setIsProfileLoaded] = useState(false);
+  const [isProfileLoaded, setIsProfileLoaded] = useState(false)
   const [name, setName] = useState('')
   const [lastName, setLastName] = useState('')
   const [patronymic, setPatronymic] = useState('')
@@ -27,85 +27,85 @@ export default function Profile() {
   const router = useRouter()
 
   useEffect(() => {
-    if(!isProfileLoaded) getProfile()
+    if (!isProfileLoaded) getProfile()
   }, [isProfileLoaded])
   async function changeDetails() {
-    try{
+    try {
       const req: DetailRequest = {
         first_name: name.trim(),
         last_name: lastName.trim(),
-        patronymic: patronymic.trim()
+        patronymic: patronymic.trim(),
       }
       const response = await patch('/profile/change_details/', req)
-      if(response.ok){
+      if (response.ok) {
         Alert.alert('Данные успешно обновлены!')
-        setDisplayName(name);
-        setDisplayLastName(lastName);
-        setDisplayPatronymic(patronymic);
-      }else{
+        setDisplayName(name)
+        setDisplayLastName(lastName)
+        setDisplayPatronymic(patronymic)
+      } else {
         Alert.alert(getErrorMessage(response.json()))
       }
-    } catch{
+    } catch {
       Alert.alert('Ошибка подключения')
     }
   }
-  async function logOut(){
-    await logout(router);
+  async function logOut() {
+    await logout(router)
   }
   async function changeEmail() {
-    try{
+    try {
       const req = {
-        email: email.trim()
+        email: email.trim(),
       }
       const response = await patch('/profile/change_email/', req)
-      if(response.ok){
+      if (response.ok) {
         Alert.alert('Почта успешно обновлена!')
         setCurrentEmail(email)
-      }else{
+      } else {
         Alert.alert(getErrorMessage(response.json()))
       }
-    } catch{
+    } catch {
       Alert.alert('Ошибка подключения')
     }
   }
   async function changePassword() {
-    try{
+    try {
       const req: PaswordRequest = {
         current_password: oldPassword,
         new_password: password,
         confirm_new_password: confPassword,
       }
       const response = await put('/profile/change_password/', req)
-      if(response.ok){
+      if (response.ok) {
         Alert.alert('Пароль успешно обновлен!')
         setOldPassword('')
         setConfPassword('')
         setPassword('')
-      }else{
+      } else {
         Alert.alert(getErrorMessage(response.json()))
       }
-    } catch{
+    } catch {
       Alert.alert('Ошибка подключения')
     }
   }
   async function getProfile() {
-    try{
+    try {
       const response = await get('/profile/')
-      if(response.ok){
+      if (response.ok) {
         const data: ProfileResponse = await response.json()
         setName(data.first_name)
         setLastName(data.last_name)
         setPatronymic(data.patronymic)
         setEmail(data.email)
-        setDisplayName(data.first_name);
-        setDisplayLastName(data.last_name);
-        setDisplayPatronymic(data.patronymic);
+        setDisplayName(data.first_name)
+        setDisplayLastName(data.last_name)
+        setDisplayPatronymic(data.patronymic)
         setCurrentEmail(data.email)
-        setIsProfileLoaded(true);
-      }else{
+        setIsProfileLoaded(true)
+      } else {
         Alert.alert(getErrorMessage(response.json()))
       }
-    } catch{
+    } catch {
       Alert.alert('Ошибка подключения')
     }
   }
@@ -120,15 +120,24 @@ export default function Profile() {
     })
   }
   const isNameDisabled = () => {
-    return name.trim().length === 0 || lastName.trim().length === 0 || 
-    (name === displayName && lastName === displayLastName && patronymic === displayPatronymic)
+    return (
+      name.trim().length === 0 ||
+      lastName.trim().length === 0 ||
+      (name === displayName &&
+        lastName === displayLastName &&
+        patronymic === displayPatronymic)
+    )
   }
 
   const isEmailDisabled = () => {
     return email.trim().length === 0 || email === currentEmail
   }
   const isPasswordDisabled = () => {
-    return password.trim().length === 0 || confPassword.trim().length === 0 || oldPassword.trim().length === 0
+    return (
+      password.trim().length === 0 ||
+      confPassword.trim().length === 0 ||
+      oldPassword.trim().length === 0
+    )
   }
   return (
     <View className="w-full h-full bg-background-1 relative">
@@ -152,89 +161,91 @@ export default function Profile() {
               учитель физической культутры
             </Text>
           </View>
-          <CustomButton 
-            color='blue' 
-            buttonText='Выйти' 
-            classNameText='text-background-1' 
-            size='xs'
-            onPress={() => logOut()}/>
+          <CustomButton
+            color="blue"
+            buttonText="Выйти"
+            classNameText="text-background-1"
+            size="xs"
+            onPress={() => logOut()}
+          />
           <View className="py-6 w-full flex justify-evenly items-center">
-              <View className='flex gap-1 my-1'>
-                <View className="w-full flex-row justify-evenly items-center p-1 gap-2">
-                  <Text className="text-typography-1 w-[30%]">Почта</Text>
-                  <Input className="rounded-custom border-tertiary-0/50 bg-tertiary-0/30 w-[60%]">
-                    <InputField
-                      className="text-typography-1"
-                      value={email}
-                      onChangeText={text => setEmail(text)}
-                    />
-                  </Input>
-                </View>
-                <View className='flex items-end pr-1'>
-                  <CustomButton
-                    buttonText="Изменить"
-                    color="orange"
-                    className='w-[30%]'
-                    classNameText="text-background-1"
-                    size="xs"
-                    isDisabled={isEmailDisabled()}
-                    onPress={async() => await changeEmail()}
-                    />
-                </View>
+            <View className="flex gap-1 my-1">
+              <View className="w-full flex-row justify-evenly items-center p-1 gap-2">
+                <Text className="text-typography-1 w-[30%]">Почта</Text>
+                <Input className="rounded-custom border-tertiary-0/50 bg-tertiary-0/30 w-[60%]">
+                  <InputField
+                    className="text-typography-1"
+                    value={email}
+                    onChangeText={(text) => setEmail(text)}
+                  />
+                </Input>
               </View>
-            <View className='flex gap-1 my-1'>
+              <View className="flex items-end pr-1">
+                <CustomButton
+                  buttonText="Изменить"
+                  color="orange"
+                  className="w-[30%]"
+                  classNameText="text-background-1"
+                  size="xs"
+                  isDisabled={isEmailDisabled()}
+                  onPress={async () => await changeEmail()}
+                />
+              </View>
+            </View>
+            <View className="flex gap-1 my-1">
               <View className="w-full flex-row justify-evenly items-center p-1 gap-2">
                 <Text className="text-typography-1 w-[30%]">Фамилия</Text>
                 <Input className="rounded-custom border-tertiary-0/50 bg-tertiary-0/30 w-[60%]">
-                  <InputField 
-                    className="text-typography-1" 
-                    value={lastName} 
-                    onChangeText={text => setLastName(text)}/>
+                  <InputField
+                    className="text-typography-1"
+                    value={lastName}
+                    onChangeText={(text) => setLastName(text)}
+                  />
                 </Input>
               </View>
               <View className="w-full flex-row justify-evenly items-center p-1 gap-2">
                 <Text className="text-typography-1 w-[30%]">Имя</Text>
                 <Input className="rounded-custom border-tertiary-0/50 bg-tertiary-0/30 w-[60%]">
-                  <InputField 
-                    className="text-typography-1" 
-                    value={name} 
-                    onChangeText={text => setName(text)}/>
+                  <InputField
+                    className="text-typography-1"
+                    value={name}
+                    onChangeText={(text) => setName(text)}
+                  />
                 </Input>
               </View>
               <View className="w-full flex-row justify-evenly items-center p-1 gap-2">
                 <Text className="text-typography-1 w-[30%]">Отчество</Text>
                 <Input className="rounded-custom border-tertiary-0/50 bg-tertiary-0/30 w-[60%]">
-                  <InputField 
-                    className="text-typography-1" 
-                    value={patronymic} 
-                    onChangeText={text => setPatronymic(text)}/>
+                  <InputField
+                    className="text-typography-1"
+                    value={patronymic}
+                    onChangeText={(text) => setPatronymic(text)}
+                  />
                 </Input>
               </View>
-              <View className='flex items-end pr-1'>
+              <View className="flex items-end pr-1">
                 <CustomButton
                   buttonText="Изменить"
                   color="orange"
-                  className='w-[30%]'
+                  className="w-[30%]"
                   classNameText="text-background-1"
                   size="xs"
                   isDisabled={isNameDisabled()}
-                  onPress={async() => await changeDetails()}
-                  />
+                  onPress={async () => await changeDetails()}
+                />
               </View>
             </View>
-            <View className='flex gap-1 my-1'>
+            <View className="flex gap-1 my-1">
               <View className="w-full flex-row justify-evenly items-center p-1 gap-2">
-                <Text className="text-typography-1 w-[30%]">
-                  Старый пароль
-                </Text>
+                <Text className="text-typography-1 w-[30%]">Старый пароль</Text>
                 <Input className="rounded-custom border-tertiary-0/50 bg-tertiary-0/30 w-[60%]">
                   <InputField
                     className="text-typography-1"
                     type={showOldPassword ? 'text' : 'password'}
                     value={oldPassword}
-                    onChangeText={text => setOldPassword(text)}
+                    onChangeText={(text) => setOldPassword(text)}
                   />
-                  <InputSlot className="pr-3" onPress={ handleOldPaswordState }>
+                  <InputSlot className="pr-3" onPress={handleOldPaswordState}>
                     <InputIcon
                       className="text-typography-1/50 w-5 h-5"
                       as={showOldPassword ? EyeIcon : EyeOffIcon}
@@ -249,9 +260,9 @@ export default function Profile() {
                     className="text-typography-1"
                     type={showPassword ? 'text' : 'password'}
                     value={password}
-                    onChangeText={text => setPassword(text)}
+                    onChangeText={(text) => setPassword(text)}
                   />
-                  <InputSlot className="pr-3" onPress={ handlePaswordState }>
+                  <InputSlot className="pr-3" onPress={handlePaswordState}>
                     <InputIcon
                       className="text-typography-1/50 w-5 h-5"
                       as={showPassword ? EyeIcon : EyeOffIcon}
@@ -268,9 +279,9 @@ export default function Profile() {
                     className="text-typography-1"
                     type={showPassword ? 'text' : 'password'}
                     value={confPassword}
-                    onChangeText={text => setConfPassword(text)}
+                    onChangeText={(text) => setConfPassword(text)}
                   />
-                  <InputSlot className="pr-3" onPress={ handlePaswordState }>
+                  <InputSlot className="pr-3" onPress={handlePaswordState}>
                     <InputIcon
                       className="text-typography-1/50 w-5 h-5"
                       as={showPassword ? EyeIcon : EyeOffIcon}
@@ -278,16 +289,16 @@ export default function Profile() {
                   </InputSlot>
                 </Input>
               </View>
-              <View className='flex items-end pr-1'>
+              <View className="flex items-end pr-1">
                 <CustomButton
                   buttonText="Изменить"
                   color="orange"
-                  className='w-[30%]'
+                  className="w-[30%]"
                   classNameText="text-background-1"
                   size="xs"
                   isDisabled={isPasswordDisabled()}
                   onPress={async () => await changePassword()}
-                  />
+                />
               </View>
             </View>
           </View>
