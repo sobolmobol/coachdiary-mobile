@@ -20,7 +20,8 @@ export default function Student() {
   const [standards, setStandards] = useState<StudentStandardResponse[]>()
   const [levels, setLevels] = useState<number[]>()
   const [selectedLevel, setSelectedLevel] = useState<number>(-1)
-  const [filteredStandards, setfilteredStandards] = useState<StudentStandardResponse[]>()
+  const [filteredStandards, setfilteredStandards] =
+    useState<StudentStandardResponse[]>()
   const handleCloseInfo = () => setShowActionsheetInfo(false)
   const handleCloseClass = () => setShowActionsheetClass(false)
 

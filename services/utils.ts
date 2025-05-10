@@ -31,7 +31,7 @@ export async function get(
       'Content-Type': 'application/json',
     },
   })
-  if (response.status === 401) {
+  if (response.status === 403) {
     Alert.alert('Время перезойти в аккаунт!')
     router.replace('/login')
   }
@@ -51,7 +51,7 @@ export async function post(
     },
     body: data ? JSON.stringify(data) : undefined,
   })
-  if (response.status === 401) {
+  if (response.status === 403) {
     Alert.alert('Время перезойти в аккаунт!')
     router.replace('/login')
   }
@@ -71,7 +71,7 @@ export async function put(
     },
     body: data ? JSON.stringify(data) : undefined,
   })
-  if (response.status === 401) {
+  if (response.status === 403) {
     Alert.alert('Время перезойти в аккаунт!')
     router.replace('/login')
   }
@@ -91,7 +91,7 @@ export async function patch(
     },
     body: data ? JSON.stringify(data) : undefined,
   })
-  if (response.status === 401) {
+  if (response.status === 403) {
     Alert.alert('Время перезойти в аккаунт!')
     router.replace('/login')
   }
@@ -107,7 +107,7 @@ export async function del(url: string): Promise<Response> {
       'Content-Type': 'application/json',
     },
   })
-  if (response.status === 401) {
+  if (response.status === 403) {
     Alert.alert('Время перезойти в аккаунт!')
     router.replace('/login')
   }

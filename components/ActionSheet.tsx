@@ -11,7 +11,6 @@ import {
   ActionsheetSectionList,
   ActionsheetSectionHeaderText,
 } from '@/components/ui/actionsheet'
-import { HStack } from '@/components/ui/hstack'
 import {
   Checkbox,
   CheckboxIndicator,
@@ -33,7 +32,6 @@ import React, { useState } from 'react'
 import {
   ClassResponse,
   StudentResponse,
-  FilterType,
   Gender,
 } from '@/types/types'
 import { CustomButton } from '@/components/Button'
@@ -42,18 +40,18 @@ import { Input, InputField } from './ui/input'
 import { CircleIcon } from '@/components/ui/icon'
 import { useRouter } from 'expo-router'
 
-type ItemData = {
+interface ItemData {
   id: number
   standard: string
 }
 
-type ItemProps = {
+interface ItemProps {
   item: ItemData
   onPress: () => void
   backgroundColorStyle: string
   textColorStyle: string
 }
-type LevelItemProps = {
+interface LevelItemProps {
   item: number
   onPress?: () => void
   backgroundColorStyle: string
@@ -457,20 +455,20 @@ function ActionSheet({
                 <Text className="text-xs text-primary-0 font-bold text-center">{`Пол: ${info?.gender == 'f' ? 'женский' : 'мужской'}`}</Text>
               </View>
               <View className="w-full flex-row justify-around p-2 mt-2">
-                  <CustomButton
-                    classNameText="text-background-1"
-                    color="green"
-                    size="xs"
-                    buttonText='Редактировать ученика'
-                    onPress={() => {
-                      router.push({
-                        pathname: '/(tabs)/(diary)/create_update/[id]',
-                        params: { id: info?.id ?? '' },
-                      });
-                      handleClose()
-                    }}
-                    isFontSizeChangable={false}
-                  />
+                <CustomButton
+                  classNameText="text-background-1"
+                  color="green"
+                  size="xs"
+                  buttonText="Редактировать ученика"
+                  onPress={() => {
+                    router.push({
+                      pathname: '/(tabs)/(diary)/create_update/[id]',
+                      params: { id: info?.id ?? '' },
+                    })
+                    handleClose()
+                  }}
+                  isFontSizeChangable={false}
+                />
                 <CustomButton
                   classNameText="text-background-1"
                   color="red"

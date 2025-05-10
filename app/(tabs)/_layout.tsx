@@ -39,15 +39,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="(classes)"
-        options={{
-          title: 'Мои классы',
-          tabBarIcon: ({ color }) => (
-            <FontAwesome6 name="people-group" size={24} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="(standards)"
         options={{
           title: 'Мои нормативы',

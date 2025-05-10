@@ -2,7 +2,6 @@ import { Stack, useRouter, useSegments } from 'expo-router'
 import React, { useEffect, useState } from 'react'
 import '@/global.css'
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { getIsLoggedInState } from '@/services/user'
 
 export default function RootLayout() {

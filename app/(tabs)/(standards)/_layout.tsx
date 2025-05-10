@@ -5,6 +5,7 @@ export default function DiaryLayout() {
   return (
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="create_update/[id]" />
     </Stack>
   )
 }

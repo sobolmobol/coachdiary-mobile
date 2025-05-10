@@ -7,7 +7,7 @@ import { EyeIcon, EyeOffIcon } from '@/components/ui/icon'
 import { CustomButton } from '@/components/Button'
 import { Link, LinkText } from '@/components/ui/link'
 import { useRouter } from 'expo-router'
-import { login, getIsLoggedInState } from '@/services/user'
+import { login } from '@/services/user'
 export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState('')

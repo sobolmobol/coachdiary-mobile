@@ -106,7 +106,7 @@ export default function LoginScreen() {
                 className="text-typography-1"
                 placeholder="Почта"
                 value={email}
-                keyboardType='email-address'
+                keyboardType="email-address"
                 onChangeText={(text: string) => {
                   setEmail(text)
                 }}

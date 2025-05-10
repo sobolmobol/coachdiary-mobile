@@ -15,7 +15,7 @@ import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context'
 import React from 'react'
 import { useRef } from 'react'
 import { Divider } from './ui/divider'
-type ItemProps = {
+interface ItemProps {
   item: string
   onPress: () => void
   backgroundColorStyle: string
@@ -103,7 +103,7 @@ function AccordionClasses({
         />
       )
     },
-    [selectedClass, setSelectedClass]
+    [selectedClass]
   )
   return (
     <Accordion

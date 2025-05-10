@@ -1,6 +1,6 @@
-import { View,  Alert } from 'react-native'
+import { View, Alert } from 'react-native'
 import { CustomButton } from '@/components/Button'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { ActionSheet } from '@/components/ActionSheet'
 import {
   StudentValueRequest,
@@ -11,10 +11,9 @@ import {
 } from '@/types/types'
 import { DiaryTable } from '@/components/DiaryTable'
 import { get, post, getErrorMessage } from '@/services/utils'
-import { Fab, FabIcon } from "@/components/ui/fab"
-import AntDesign from '@expo/vector-icons/AntDesign';
-import { useRouter } from 'expo-router'
-
+import { Fab } from '@/components/ui/fab'
+import AntDesign from '@expo/vector-icons/AntDesign'
+import { useRouter, useFocusEffect } from 'expo-router'
 
 export default function Index() {
   const [showActionsheetStand, setShowActionsheetStand] = useState(false)
@@ -135,11 +134,12 @@ export default function Index() {
     setFilteredStudents(updatedStudents)
     updateResults(updatedStudents)
   }
-
-  useEffect(() => {
-    getClasses()
-    getStandards()
-  }, [])
+  useFocusEffect(
+    useCallback(() => {
+      getClasses()
+      getStandards()
+    }, [])
+  )
   useEffect(() => {
     setStandardType(() => {
       return standards.find((standard) => standard.id === selectedStandard.id)
@@ -269,13 +269,13 @@ export default function Index() {
         />
       </View>
       <Fab
-        size="lg"
+        size="md"
         className="bg-primary-0 hover:bg-primary-0/70 rounded-custom-big"
-        onPress={() =>{
+        onPress={() => {
           router.push({
             pathname: '/(tabs)/(diary)/create_update/[id]',
             params: { id: 'create' },
-          });
+          })
         }}
       >
         <AntDesign name="plus" size={24} color="#E5AA7B" />
