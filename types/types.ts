@@ -41,7 +41,6 @@ export type StudentsValueResponse = {
   student_class: {
     id: number
     number: number
-    recruitment_year: number
     class_name: string
   }
   birthday: string
@@ -125,19 +124,32 @@ export type StudentResponse = {
   }
   birthday: string
   gender: Gender
+  invitation_link: string
 }
 export type StudentStandardResponse = {
-  Standard: {
-    Id: number
-    Name: string
-    Has_numeric_value: boolean
-  }
-  Grade: number
-  Value: number
-  Level_number: number
+  standards: {
+    standard: {
+      id: number
+      name: string
+      has_numeric_value: boolean
+    }
+      level_number: number
+      value: number | null 
+      grade: number | null
+  }[]
+  summary_grade: 4
 }
 
-
+export interface StandardByLevel {
+  standard: {
+    id: number
+    name: string
+    has_numeric_value: boolean
+  }
+  level_number: number
+  value: number | null 
+  grade: number | null
+}
 export type StudentRequest = {
   id: number
   first_name: string

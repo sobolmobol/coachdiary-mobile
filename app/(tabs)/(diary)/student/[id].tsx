@@ -1,13 +1,15 @@
 import { Alert, Text, View } from 'react-native'
 import { router, Stack, useLocalSearchParams } from 'expo-router'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { get, post, getErrorMessage, del } from '@/services/utils'
 import { CustomButton } from '@/components/Button'
 import {
   StudentResponse,
   StudentStandardResponse,
   StudentValueRequest,
+  StandardByLevel
 } from '@/types/types'
+import  { useFocusEffect } from 'expo-router'
 import { ActionSheet } from '@/components/ActionSheet'
 import StudentStandardTable from '@/components/StudentStandardTable'
 
@@ -16,46 +18,57 @@ export default function Student() {
   const [studentInfoLoading, setStudentInfoLoading] = useState(true)
   const [showActionsheetInfo, setShowActionsheetInfo] = useState(false)
   const [showActionsheetClass, setShowActionsheetClass] = useState(false)
-  const [studentInfo, setStudentInfo] = useState<StudentResponse>()
-  const [standards, setStandards] = useState<StudentStandardResponse[]>()
-  const [levels, setLevels] = useState<number[]>()
-  const [selectedLevel, setSelectedLevel] = useState<number>(-1)
-  const [filteredStandards, setfilteredStandards] =
-    useState<StudentStandardResponse[]>()
+  const [studentInfo, setStudentInfo] = useState<StudentResponse | null>(null)
+  const [standards, setStandards] = useState<StandardByLevel[]>([])
+  const [levels, setLevels] = useState<number[]>([...Array(11).keys()].map((i) => i + 1))
+  const [selectedLevel, setSelectedLevel] = useState<number>(1)
+  const [sumGrade, setSumGrade] = useState<number>(0)
+  //const [filteredStandards, setfilteredStandards] = useState<StandardByLevel[]>([])
   const handleCloseInfo = () => setShowActionsheetInfo(false)
   const handleCloseClass = () => setShowActionsheetClass(false)
 
-  function filterSt() {
-    setfilteredStandards(
-      standards?.filter((item) => item.Level_number === selectedLevel)
-    )
+  async function getStandards() {
+    try{
+      const response = await get(`/students/${id}/standards/`, {
+        level_number: selectedLevel
+      })
+      if(response.ok){
+        const data: StudentStandardResponse = await response.json()
+        setStandards(data.standards)
+        setSumGrade(data.summary_grade)
+      } else{
+        Alert.alert(getErrorMessage(response.json()))
+      } 
+    } catch {
+      Alert.alert('Произошла ошибка во время отправки данных, попробуйте еще раз')
+    }
   }
-  async function updateResults(updatedStandards: StudentStandardResponse[]) {
+  async function updateResults(updatedStandards: StandardByLevel[]) {
     try {
       const req: StudentValueRequest[] = updatedStandards.map((standard) => ({
         student_id: +id,
-        standard_id: standard.Standard.Id,
-        value: standard.Standard.Has_numeric_value
-          ? standard.Value
-          : standard.Grade,
+        standard_id: standard.standard.id,
+        value: standard.standard.has_numeric_value
+          ? standard.value
+          : standard.grade,
       }))
-      const response = await post('/students/results/new/', req)
+      const response = await post('/students/results/create/', req)
       if (response.ok) {
-        await getStandard()
+        await getStandards()
         Alert.alert('Данные успешно сохранены')
       } else {
         Alert.alert(getErrorMessage(await response.json()))
       }
     } catch {
-      console.log('Ошибка соединения')
+      Alert.alert('Произошла ошибка во время отправки данных, попробуйте еще раз')
     }
   }
 
   const handleStandardsChange = (
-    updatedStandards: StudentStandardResponse[]
+    updatedStandards: StandardByLevel[]
   ) => {
-    setStandards(updatedStandards)
     updateResults(updatedStandards)
+    setStandards(updatedStandards)
   }
   async function getStudentInfo() {
     try {
@@ -66,7 +79,7 @@ export default function Student() {
         setStudentInfo(studentInfo)
       }
     } catch {
-      console.log('Ошибка при получении информации об ученике')
+      Alert.alert('Произошла ошибка во время отправки данных, попробуйте еще раз')
     } finally {
       setStudentInfoLoading(false)
     }
@@ -91,13 +104,13 @@ export default function Student() {
               const response = await del(`/students/${id}/`)
               if (response.ok) {
                 Alert.alert('Ученик успешно удален!')
-                router.navigate('/(tabs)/(diary)')
+                router.push('/(tabs)/(diary)')
                 handleCloseInfo()
               } else {
                 Alert.alert(getErrorMessage(await response.json()))
               }
             } catch {
-              console.log('Ошибка при удалении ученика')
+              Alert.alert('Произошла ошибка во время отправки данных, попробуйте еще раз')
             }
           },
         },
@@ -105,40 +118,37 @@ export default function Student() {
       { cancelable: true }
     )
   }
-  async function getStandard() {
-    try {
-      const response = await get(`/students/${id}/standards/`)
-      if (response.ok) {
-        const standardsR: StudentStandardResponse[] = await response.json()
-        setStandards(standardsR)
-      } else {
-        console.log(getErrorMessage(await response.json()))
+
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchData = async () => {
+        try {
+          await getStudentInfo()
+        } catch (error) {
+          console.error('Ошибка при загрузке данных:', error)
+        }
       }
-    } catch {
-      console.log('Ошибка при загрузке нормативов')
-    }
-  }
+      fetchData()
+      return () => {
+        setStudentInfo(null)
+      }
+    }, [])
+  )
+
+  useEffect(() => {
+    const level = studentInfo?.student_class.number ?? 1
+    setSelectedLevel(level)
+    setLevels([...Array(level).keys()].map((i) => i + 1))
+  }, [studentInfo])
+
   useEffect(() => {
     const getAsyncData = async () => {
-      await getStudentInfo()
-      await getStandard()
+      await getStandards()
     }
     getAsyncData()
-  }, [])
-  useEffect(() => {
-    if (standards) {
-      const uniqueLevels = Array.from(
-        new Set(standards.map((item) => item.Level_number))
-      )
-      setLevels(uniqueLevels)
-      filterSt()
-    }
-  }, [standards])
-  useEffect(() => {
-    if (levels && levels.length > 0 && selectedLevel === -1) {
-      setSelectedLevel(levels[levels.length - 1])
-    }
-  }, [levels])
+  }, [selectedLevel])
+
   return (
     <View className="bg-background-1 flex-1">
       <Stack.Screen
@@ -192,6 +202,7 @@ export default function Student() {
       <StudentStandardTable
         standards={standards ?? []}
         onStandardChange={handleStandardsChange}
+        sumGrade={sumGrade}
       />
     </View>
   )

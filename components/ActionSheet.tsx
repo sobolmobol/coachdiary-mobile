@@ -1,6 +1,5 @@
 import {
   Actionsheet,
-  ActionsheetFlatList,
   ActionsheetContent,
   ActionsheetItem,
   ActionsheetItemText,
@@ -8,8 +7,6 @@ import {
   ActionsheetDragIndicatorWrapper,
   ActionsheetBackdrop,
   ActionsheetScrollView,
-  ActionsheetSectionList,
-  ActionsheetSectionHeaderText,
 } from '@/components/ui/actionsheet'
 import {
   Checkbox,
@@ -112,9 +109,9 @@ function ActionSheet({
     id: number
     standard: string
   }) => void
-  isLoading?: Boolean
-  isYear?: Boolean
-  info?: StudentResponse
+  isLoading?: Boolean | null
+  isYear?: Boolean | null
+  info?: StudentResponse | null
   levels?: number[]
   deleteStudent?: () => void
   selectedLevel?: number

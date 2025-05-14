@@ -36,6 +36,10 @@ export default function Index() {
   const [yearBefore, setYearBefore] = useState<number | null>(null)
   const [gender, setGender] = useState<Gender | null>(null)
   const [grades, setGrades] = useState<string[]>([])
+  const getAsyncData = async () => {
+    await getClasses()
+    await getStandards()
+  }
   const [selectedClass, setSelectedClass] = useState<{
     class_number: number
     class_letter: string
@@ -80,7 +84,7 @@ export default function Index() {
         standard_id: selectedStandard.id,
         value: standardType === 'physical' ? student.value : student.grade,
       }))
-      const response = await post('/students/results/new/', req)
+      const response = await post('/students/results/create/', req)
       if (response.ok) {
         await getStudents()
         Alert.alert('Данные успешно сохранены')
@@ -88,17 +92,21 @@ export default function Index() {
         Alert.alert(getErrorMessage(await response.json()))
       }
     } catch {
-      console.log('Ошибка соединения')
+      Alert.alert('Произошла ошибка во время отправки данных, попробуйте еще раз')
     }
   }
   async function getClasses() {
     try {
       setIsLoadingClasses(true)
       const response = await get('/classes/')
-      const classes = await response.json()
-      setClasses(classes)
+      if(response.ok){
+        const classes: ClassResponse[] = await response.json()
+        setClasses(classes)
+      } else {
+        Alert.alert(getErrorMessage(response.json()))
+      }
     } catch {
-      console.log('Ошибка при получении данных классов')
+      Alert.alert('Произошла ошибка во время отправки данных, попробуйте еще раз')
     } finally {
       setIsLoadingClasses(false)
     }
@@ -107,26 +115,33 @@ export default function Index() {
     try {
       setIsLoadingStand(true)
       const response = await get('/standards/')
-      const stds = await response.json()
-      setStandards(stds)
+      if(response.ok){
+        const stds: StandardResponse[] = await response.json()
+        setStandards(stds)
+      } else {
+        Alert.alert(getErrorMessage(response.json()))
+      }
     } catch {
-      console.log('Ошибка при получении данных нормативов')
+      Alert.alert('Произошла ошибка во время отправки данных, попробуйте еще раз')
     } finally {
       setIsLoadingStand(false)
     }
   }
   async function getStudents() {
     try {
-      const response = await get('/students/results/', {
+      const response = await get('/students/results/list/', {
         'class_id[]': getClassId(),
         standard_id: selectedStandard.id,
       })
-      const students = await response.json()
-
-      setStudents(students)
-      cancelFilters()
+      if (response.ok){
+        const data: StudentsValueResponse[] = await response.json()
+        setStudents(data)
+        setFilteredStudents(data)
+      } else {
+        Alert.alert(getErrorMessage(response.json()))
+      }
     } catch {
-      console.log('Ошибка при получении данных учеников')
+      Alert.alert('Произошла ошибка во время отправки данных, попробуйте еще раз')
     }
   }
   const handleStudentsChange = (updatedStudents: StudentsValueResponse[]) => {
@@ -136,8 +151,19 @@ export default function Index() {
   }
   useFocusEffect(
     useCallback(() => {
-      getClasses()
-      getStandards()
+      getAsyncData()
+      return () => {
+        setFilteredStudents([])
+        setStudents([])
+        setSelectedClass({
+          class_number: -1,
+          class_letter: ''
+        })
+        setSelectedStandard({
+          id: -1,
+          standard: ''
+        })
+      }
     }, [])
   )
   useEffect(() => {
@@ -149,10 +175,11 @@ export default function Index() {
     })
   }, [selectedStandard])
   useEffect(() => {
-    if (selectedStandard.id != -1 && selectedClass.class_number != -1) {
+    if (selectedStandard.id !== -1 && selectedClass.class_number !== -1) {
       getStudents()
     }
   }, [selectedStandard, selectedClass])
+
 
   function acceptFilters() {
     setFilteredStudents(
@@ -265,7 +292,8 @@ export default function Index() {
         <DiaryTable
           onStudentsChange={handleStudentsChange}
           standardType={standardType}
-          students={selectedStandard.id === -1 ? [] : filteredStudents}
+          students={filteredStudents}
+          areChosenClaAndSt={selectedStandard.id !== -1 && selectedClass.class_number !== -1}
         />
       </View>
       <Fab

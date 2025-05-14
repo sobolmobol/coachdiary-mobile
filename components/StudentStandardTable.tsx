@@ -8,7 +8,7 @@ import {
   TableData,
 } from '@/components/ui/table'
 import { Input, InputField } from '@/components/ui/input'
-import { StudentStandardResponse } from '@/types/types'
+import { StandardByLevel } from '@/types/types'
 import { useEffect, useState, useMemo } from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { View, ScrollView, Text } from 'react-native'
@@ -23,16 +23,17 @@ function getGradeColor(grade: number) {
 export default function StudentStandardTable({
   standards,
   onStandardChange,
+  sumGrade,
   ...props
 }: {
-  standards: StudentStandardResponse[]
-  onStandardChange: (updatedStandards: StudentStandardResponse[]) => void
+  standards: StandardByLevel[]
+  onStandardChange: (updatedStandards: StandardByLevel[]) => void
+  sumGrade: number
 } & React.ComponentProps<typeof Table>) {
   const [currentPage, setCurrentPage] = useState(1)
   const [updatedStandards, setUpdatedStandards] = useState<
-    StudentStandardResponse[]
+    StandardByLevel[]
   >([])
-  const [avgGrade, setAvgGrade] = useState<number>()
   const standardsPerPage = 7
   const totalPages = Math.ceil(updatedStandards.length / standardsPerPage)
   const currentStandards = updatedStandards.slice(
@@ -46,7 +47,7 @@ export default function StudentStandardTable({
   }
   const handleInputChange = (
     id: number,
-    field: 'Value' | 'Grade',
+    field: 'value' | 'grade',
     newValue: string
   ) => {
     if (Number.isNaN(+newValue)) {
@@ -54,7 +55,7 @@ export default function StudentStandardTable({
     }
     setUpdatedStandards(
       updatedStandards.map((standard) => {
-        return standard.Standard.Id === id
+        return standard.standard.id === id
           ? {
               ...standard,
               [field]: +newValue,
@@ -66,16 +67,7 @@ export default function StudentStandardTable({
   useEffect(() => {
     setUpdatedStandards(standards)
   }, [standards])
-  useEffect(() => {
-    setAvgGrade(
-      +(
-        updatedStandards.reduce((acc, curr) => {
-          const sum = acc + curr.Grade
-          return +sum
-        }, 0) / updatedStandards.length
-      ).toFixed(2)
-    )
-  }, [updatedStandards])
+
   function saveData() {
     onStandardChange(updatedStandards)
   }
@@ -98,13 +90,13 @@ export default function StudentStandardTable({
         <TableBody>
           {currentStandards.map((standard, index) => (
             <TableRow
-              key={standard.Standard.Id}
+              key={standard.standard.id}
               className={`flex border-primary-0/50 flex-row ${index % 2 === 0 ? 'bg-background-1' : 'bg-primary-0/20'}`}
             >
               <TableData className="font-bold text-typography-1 text-xs text-end px-3 flex-[2] min-w-[100px]">
-                {standard.Standard.Name}
+                {standard.standard.name}
               </TableData>
-              {standard.Standard.Has_numeric_value ? (
+              {standard.standard.has_numeric_value ? (
                 <>
                   <TableData className="px-2 flex-[1.5] min-w-[70px] items-center justify-center flex">
                     <Input
@@ -114,9 +106,9 @@ export default function StudentStandardTable({
                     >
                       <InputField
                         className="text-s text-center font-extrabold text-typography-1"
-                        value={standard.Value?.toString() ?? ''}
+                        value={standard.value?.toString() ?? ''}
                         onChangeText={(text: string) =>
-                          handleInputChange(standard.Standard.Id, 'Value', text)
+                          handleInputChange(standard.standard.id, 'value', text)
                         }
                       />
                     </Input>
@@ -124,10 +116,10 @@ export default function StudentStandardTable({
 
                   <TableData className="px-2 flex-[1.5] min-w-[70px] items-center justify-center flex">
                     <View
-                      className={`bg-${getGradeColor(standard.Grade ?? 0)} w-7 h-7 rounded-custom items-center justify-center`}
+                      className={`bg-${getGradeColor(standard.grade ?? 0)} w-7 h-7 rounded-custom items-center justify-center`}
                     >
                       <Text className="text-background-1 text-s font-extrabold text-center">
-                        {standard.Grade}
+                        {standard.grade}
                       </Text>
                     </View>
                   </TableData>
@@ -140,13 +132,13 @@ export default function StudentStandardTable({
                     <Input
                       variant="rounded"
                       size="sm"
-                      className={`w-[70%] rounded-custom border-${getGradeColor(standard.Grade ?? 0)}`}
+                      className={`w-[70%] rounded-custom border-${getGradeColor(standard.grade ?? 0)}`}
                     >
                       <InputField
-                        value={standard.Grade?.toString() ?? ''}
-                        className={`text-center font-extrabold text-s text-${getGradeColor(standard.Grade ?? 0)}`}
+                        value={standard.grade?.toString() ?? ''}
+                        className={`text-center font-extrabold text-s text-${getGradeColor(standard.grade ?? 0)}`}
                         onChangeText={(text: string) =>
-                          handleInputChange(standard.Standard.Id, 'Grade', text)
+                          handleInputChange(standard.standard.id, 'grade', text)
                         }
                       />
                     </Input>
@@ -166,7 +158,7 @@ export default function StudentStandardTable({
               </TableData>
               <TableData className="px-2 flex-[1.5] min-w-[70px]"></TableData>
               <TableData className="text-m text-tertiary-0 font-bold text-center px-2 flex-1 min-w-[70px]">
-                {avgGrade}
+                {sumGrade}
               </TableData>
             </TableRow>
           </View>

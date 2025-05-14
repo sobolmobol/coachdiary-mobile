@@ -34,6 +34,7 @@ export default function StandardScreen() {
   const [isTechnical, setIsTechnical] = useState(false)
   const [showActionsheetClass, setShowActionsheetClass] = useState(false)
   const [showActionsheetStand, setShowActionsheetStand] = useState(false)
+  const [classes, setClasses] = useState<number[]>([])
   const [selectedFisStand, setSelectedFisStand] = useState<ItemData>({
     id: -1,
     standard: '',
@@ -182,9 +183,17 @@ export default function StandardScreen() {
       getStandards()
     }, [])
   )
-  useEffect(() => {
-    console.log(isTechnical)
-  }, [isTechnical])
+
+    useEffect(() => {
+      const id = isTechnical ? selectedTechStand.id : selectedFisStand.id
+      if (id !== -1) {
+        const uniqueLevels = Array.from(new Set(standards.find(item => item.id === id)?.levels.map(item => item.level_number)))
+        setClasses(uniqueLevels)
+      } else {
+        setClasses(Array.from({length: 11}, (_, i) => i + 1))
+      }
+    }, [isTechnical, standards, selectedFisStand, selectedTechStand])
+
   return (
     <View className="bg-background-1 flex-1 my-1">
       <View className="flex-row justify-center items-center">
@@ -228,7 +237,7 @@ export default function StandardScreen() {
               </Text>
               <StandardTable
                 standards={filtredStandardsG ?? {}}
-              ></StandardTable>
+              />
             </View>
             <View className="w-full flex items-between gap-3">
               <Text className="text-m text-primary-0 text-center font-semibold">
@@ -236,7 +245,7 @@ export default function StandardScreen() {
               </Text>
               <StandardTable
                 standards={filtredStandardsB ?? {}}
-              ></StandardTable>
+              />
             </View>
           </View>
           <ActionSheet
@@ -319,7 +328,7 @@ export default function StandardScreen() {
         handleClose={handleCloseClass}
         isOpen={showActionsheetClass}
         onClose={handleCloseClass}
-        levels={[...Array(11).keys()].map((i) => i + 1)}
+        levels={classes}
         selectedLevel={selectedClass}
         setSelectedLevel={setSelectedClass}
       />

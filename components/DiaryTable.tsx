@@ -15,30 +15,18 @@ import { View, ScrollView, Text } from 'react-native'
 import { CustomButton } from '@/components/Button'
 import { Link } from 'expo-router'
 
-function getShortName(fullName: string) {
-  return fullName
-    .split(' ')
-    .map((value, index) => {
-      return index === 0 ? value : value[0] + '.'
-    })
-    .join(' ')
-}
-function getGradeColor(grade: number) {
-  if (grade === 5) return 'success-0/80'
-  else if (grade === 4) return 'info-0'
-  else if (grade === 3) return 'warning-0/70'
-  else if (grade === 2) return 'error-0'
-  else return 'info-0'
-}
+
 function DiaryTable({
   students,
   standardType,
   onStudentsChange,
+  areChosenClaAndSt,
   ...props
 }: {
   students: StudentsValueResponse[]
   standardType: string
   onStudentsChange: (updStudents: StudentsValueResponse[]) => void
+  areChosenClaAndSt: Boolean
 } & React.ComponentProps<typeof Table>) {
   const [currentPage, setCurrentPage] = useState(1)
   const [updatedStudents, setUpdatedStudents] = useState<
@@ -74,9 +62,26 @@ function DiaryTable({
       })
     )
   }
+  function getShortName(fullName: string) {
+    return fullName
+    .split(' ')
+    .map((value, index) => {
+      return index === 0 ? value : value[0] + '.'
+    })
+    .join(' ')
+  }
+  function getGradeColor(grade: number) {
+    if (grade === 5) return 'success-0/80'
+    else if (grade === 4) return 'info-0'
+    else if (grade === 3) return 'warning-0/70'
+    else if (grade === 2) return 'error-0'
+    else return 'info-0'
+  }
+
   function saveData() {
     onStudentsChange(updatedStudents)
   }
+
   useEffect(() => {
     setUpdatedStudents(students)
   }, [students])
@@ -106,7 +111,23 @@ function DiaryTable({
 
       <ScrollView className="w-full max-h-90">
         <TableBody>
-          {currentStudents.map((student, index) => (
+          {currentStudents.length === 0 ? 
+          (areChosenClaAndSt ? 
+          <>
+            <TableRow key={0}>
+              <TableData className="text-xs font-bold text-center text-typography-1 py-2 px-1 flex-1 min-w-[50px]">
+                В этом классе ученики пока не зафиксированы
+              </TableData>
+            </TableRow>
+          </> : 
+          <>
+            <TableRow key={0}>
+              <TableData className="text-xs font-bold text-center text-typography-1 py-2 px-1 flex-1 min-w-[50px]">
+                Выберите норматив и класс, чтобы тут появились оценки
+              </TableData>
+            </TableRow>
+          </>) :
+          currentStudents.map((student, index) => (
             <TableRow
               key={student.id}
               className={`border-primary-0/50 flex flex-row ${index % 2 === 0 ? 'bg-background-1' : 'bg-primary-0/20'}`}
