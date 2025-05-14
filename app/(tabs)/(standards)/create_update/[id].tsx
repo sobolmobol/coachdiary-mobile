@@ -101,18 +101,18 @@ export default function CreateOrUpdateStandardScreen() {
     const currentMethod = id === 'create' ? post : patch
     const response = await currentMethod(`/standards/` + currentId, requestData)
     if (response.ok && id === 'create') {
-      Alert.alert('Норматив успешно создан')
+      Alert.alert('Успех', 'Норматив создан')
       setStandard('')
       setIsTechnical(false)
       setClasses([])
       setLevelsWithZeroes()
     } else if (response.ok && id !== 'create') {
-      Alert.alert('Данные о нормативе успешно обновлены')
+      Alert.alert('Успех', 'Данные о нормативе обновлены')
     } else {
-      Alert.alert(getErrorMessage(await response.json()))
+      Alert.alert('Ошибка', getErrorMessage(await response.json()))
     }
   } catch {
-      Alert.alert('Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
     }
   }
   async function getStandards(){
@@ -148,9 +148,10 @@ export default function CreateOrUpdateStandardScreen() {
         setCurrentClass(Math.min(...classNumbers));
       } else {
         setCurrentClass(-1); 
-      }}    
+      }
+    } 
   } catch{
-      Alert.alert('Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
     }
   }
 

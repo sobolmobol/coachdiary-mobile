@@ -7,6 +7,7 @@ import {
 import { getItem, setItem, removeItem } from '@/store/secureStorage'
 import { Router } from 'expo-router'
 import { Alert } from 'react-native'
+import { getErrorMessage } from '@/services/utils'
 
 export async function setIsLoggedInState(isLoggedIn: boolean) {
   setItem('isLoggedIn', String(isLoggedIn))
@@ -55,10 +56,10 @@ export async function login(email: string, password: string, router: Router) {
       router.replace('/')
       return data
     } else {
-      Alert.alert('Ошибка при входе')
+      Alert.alert('Ошибка', getErrorMessage(await response.json()))
     }
   } catch {
-    Alert.alert('Ошибка соединения с интернетом')
+    Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
   }
 }
 export async function refreshToken(router: Router) {
@@ -86,14 +87,14 @@ export async function refreshToken(router: Router) {
         await setItem('refreshToken', data.refresh_token)
         return data.access_token
       } else {
-        Alert.alert('Ошибка при входе!')
+        Alert.alert('Ошибка', getErrorMessage(await response.json()))
       }
     } else {
       logout(router)
-      console.log('refreshToken dont exist')
+      console.log('Предупреждение', 'Сессия истекла, необходимо перезойти в аккаунт')
     }
   } catch {
-    Alert.alert('Ошибка соединения с интернетом')
+    Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
   }
 }
 
@@ -133,10 +134,10 @@ export async function logout(router: Router) {
       router.replace('/login')
       return data
     } else {
-      Alert.alert('Ошибка при выходе')
+      Alert.alert('Ошибка', getErrorMessage(await response.json()))
     }
   } catch {
-    Alert.alert('Ошибка')
+    Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
   }
 }
 
@@ -163,9 +164,9 @@ export async function signUp(req: CreateUserRequest, router: Router) {
       )
       router.navigate('/login')
     } else {
-      Alert.alert('Ошибка при создании пользователя!')
+      Alert.alert('Ошибка', getErrorMessage(await response.json()))
     }
   } catch {
-    Alert.alert('Ошибка соединения с интернетом')
+    Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
   }
 }

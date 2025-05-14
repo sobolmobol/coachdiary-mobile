@@ -23,13 +23,13 @@ export default function LoginScreen() {
     const isPassword = password !== confPassword || password.length !== 0
     const isEmail = email.length !== 0
     if (!isName) {
-      Alert.alert('Введите фамилию и имя')
+      Alert.alert('Предупреждение', 'Введите фамилию и имя')
     }
     if (!isPassword) {
-      Alert.alert('Поля паролей должны быть не пустыми и должны совпадать')
+      Alert.alert('Предупреждение', 'Поля паролей должны быть не пустыми и должны совпадать')
     }
     if (!isEmail) {
-      Alert.alert('Введите почту')
+      Alert.alert('Предупреждение', 'Введите почту')
     }
     return isName || isPassword || isEmail
   }

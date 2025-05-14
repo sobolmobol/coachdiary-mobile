@@ -94,7 +94,7 @@ export default function StandardScreen() {
         params: { id: id ?? '' }
       })  
     } else{
-      Alert.alert('Выберите норматив, чтобы его редактировать')
+      Alert.alert('Предупреждение', 'Выберите норматив, чтобы его редактировать')
     }
   }
   function getStandardsByClass(
@@ -143,30 +143,47 @@ export default function StandardScreen() {
           standard: standardsData[0].name,
         })
       } else {
-        console.log(getErrorMessage(response.json()))
+        Alert.alert('Ошибка', getErrorMessage(await response.json()))
       }
     } catch {
-      Alert.alert('Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
     }
   }
 
   async function deleteStandard(){
-    const id = isTechnical ? selectedTechStand.id : selectedFisStand.id 
-    if(id !== -1) {
-      try {
-        const response = await del(`/standards/${id}/`)
-        if (response.ok){
-          Alert.alert('Норматив успешно удален')
-          getStandards()
+    Alert.alert(
+    'Удаление норматива',
+    'Вы уверены, что хотите удалить этот норматив? Это действие нельзя отменить.',
+  [
+    {
+      text: 'Отмена',
+      style: 'cancel',
+    },
+    {
+      text: 'Удалить',
+      style: 'destructive',
+      onPress: async () => {
+        const id = isTechnical ? selectedTechStand.id : selectedFisStand.id 
+        if(id !== -1) {
+          try {
+            const response = await del(`/standards/${id}/`)
+            if (response.ok){
+              Alert.alert('Норматив успешно удален')
+              getStandards()
+            } else {
+              Alert.alert('Ошибка', getErrorMessage(await response.json()))
+            }
+          } catch{
+            Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
+          }
         } else {
-          Alert.alert(getErrorMessage(response.json()))
+          Alert.alert('Предупреждение', 'Выберите норматив, чтобы его удалить')
         }
-      } catch{
-        Alert.alert('Произошла ошибка во время отправки данных, попробуйте еще раз')
-      }
-    } else {
-      Alert.alert('Выберите норматив, чтобы его удалить')
-    }
+      },
+    },
+  ],
+  { cancelable: true }
+)
   }
 
   useEffect(() => {
@@ -181,18 +198,19 @@ export default function StandardScreen() {
   useFocusEffect(
     useCallback(() => {
       getStandards()
+      return () => {}
     }, [])
   )
 
-    useEffect(() => {
-      const id = isTechnical ? selectedTechStand.id : selectedFisStand.id
-      if (id !== -1) {
-        const uniqueLevels = Array.from(new Set(standards.find(item => item.id === id)?.levels.map(item => item.level_number)))
-        setClasses(uniqueLevels)
-      } else {
-        setClasses(Array.from({length: 11}, (_, i) => i + 1))
-      }
-    }, [isTechnical, standards, selectedFisStand, selectedTechStand])
+  useEffect(() => {
+    const id = isTechnical ? selectedTechStand.id : selectedFisStand.id
+    if (id !== -1) {
+      const uniqueLevels = Array.from(new Set(standards.find(item => item.id === id)?.levels.map(item => item.level_number)))
+      setClasses(uniqueLevels)
+    } else {
+      setClasses(Array.from({length: 11}, (_, i) => i + 1))
+    }
+  }, [isTechnical, standards, selectedFisStand, selectedTechStand])
 
   return (
     <View className="bg-background-1 flex-1 my-1">

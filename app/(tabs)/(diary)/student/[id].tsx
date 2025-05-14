@@ -23,7 +23,6 @@ export default function Student() {
   const [levels, setLevels] = useState<number[]>([...Array(11).keys()].map((i) => i + 1))
   const [selectedLevel, setSelectedLevel] = useState<number>(1)
   const [sumGrade, setSumGrade] = useState<number>(0)
-  //const [filteredStandards, setfilteredStandards] = useState<StandardByLevel[]>([])
   const handleCloseInfo = () => setShowActionsheetInfo(false)
   const handleCloseClass = () => setShowActionsheetClass(false)
 
@@ -37,10 +36,10 @@ export default function Student() {
         setStandards(data.standards)
         setSumGrade(data.summary_grade)
       } else{
-        Alert.alert(getErrorMessage(response.json()))
+        Alert.alert('Ошибка', getErrorMessage(response.json()))
       } 
     } catch {
-      Alert.alert('Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
     }
   }
   async function updateResults(updatedStandards: StandardByLevel[]) {
@@ -55,12 +54,12 @@ export default function Student() {
       const response = await post('/students/results/create/', req)
       if (response.ok) {
         await getStandards()
-        Alert.alert('Данные успешно сохранены')
+        Alert.alert('Успех', 'Данные сохранены')
       } else {
-        Alert.alert(getErrorMessage(await response.json()))
+        Alert.alert('Ошибка', getErrorMessage(await response.json()))
       }
     } catch {
-      Alert.alert('Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
     }
   }
 
@@ -77,9 +76,11 @@ export default function Student() {
       if (response.ok) {
         const studentInfo: StudentResponse = await response.json()
         setStudentInfo(studentInfo)
+      } else {
+        Alert.alert('Ошибка', getErrorMessage(await response.json()))
       }
     } catch {
-      Alert.alert('Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
     } finally {
       setStudentInfoLoading(false)
     }
@@ -103,14 +104,14 @@ export default function Student() {
             try {
               const response = await del(`/students/${id}/`)
               if (response.ok) {
-                Alert.alert('Ученик успешно удален!')
+                Alert.alert('Успех', 'Ученик удален')
                 router.push('/(tabs)/(diary)')
                 handleCloseInfo()
               } else {
-                Alert.alert(getErrorMessage(await response.json()))
+                Alert.alert('Ошибка', getErrorMessage(await response.json()))
               }
             } catch {
-              Alert.alert('Произошла ошибка во время отправки данных, попробуйте еще раз')
+              Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
             }
           },
         },

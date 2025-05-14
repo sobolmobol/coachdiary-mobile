@@ -99,6 +99,7 @@ export type ProfileResponse = {
   last_name: string
   patronymic: string
   full_name: string
+  role: string
 }
 export type DetailRequest = {
   first_name: string

@@ -81,10 +81,10 @@ export default function CreateOrUpdateStudentScreen() {
         setClassLetter(studentInfo.student_class.class_name)
         setStudentClass(studentInfo.student_class.number)
       } else {
-        console.log(getErrorMessage(response.json()))
+        Alert.alert('Ошибка', getErrorMessage(await response.json()))
       }
     } catch {
-      console.log('Ошибка при получении информации об ученике')
+      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
     } finally {
       setStudentInfoLoading(false)
     }
@@ -140,13 +140,13 @@ export default function CreateOrUpdateStudentScreen() {
       }
       const response = await post(`/students/`, request)
       if (response.ok) {
-        Alert.alert('Ученик успешно создан!')
+        Alert.alert('Успех', 'Ученик создан')
         router.push('/(tabs)/(diary)')
       } else {
-        console.log(getErrorMessage(response.json()))
+        Alert.alert('Ошибка', getErrorMessage(response.json()))
       }
     } catch {
-      console.log('Ошибка при создании ученика')
+      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
     }
   }
   useEffect(() => {

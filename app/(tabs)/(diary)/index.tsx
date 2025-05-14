@@ -87,12 +87,12 @@ export default function Index() {
       const response = await post('/students/results/create/', req)
       if (response.ok) {
         await getStudents()
-        Alert.alert('Данные успешно сохранены')
+        Alert.alert('Успех', 'Данные сохранены')
       } else {
-        Alert.alert(getErrorMessage(await response.json()))
+        Alert.alert('Ошибка', getErrorMessage(await response.json()))
       }
     } catch {
-      Alert.alert('Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
     }
   }
   async function getClasses() {
@@ -103,10 +103,10 @@ export default function Index() {
         const classes: ClassResponse[] = await response.json()
         setClasses(classes)
       } else {
-        Alert.alert(getErrorMessage(response.json()))
+        Alert.alert('Ошибка', getErrorMessage(response.json()))
       }
     } catch {
-      Alert.alert('Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
     } finally {
       setIsLoadingClasses(false)
     }
@@ -119,10 +119,10 @@ export default function Index() {
         const stds: StandardResponse[] = await response.json()
         setStandards(stds)
       } else {
-        Alert.alert(getErrorMessage(response.json()))
+        Alert.alert('Ошибка', getErrorMessage(response.json()))
       }
     } catch {
-      Alert.alert('Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
     } finally {
       setIsLoadingStand(false)
     }
@@ -138,10 +138,10 @@ export default function Index() {
         setStudents(data)
         setFilteredStudents(data)
       } else {
-        Alert.alert(getErrorMessage(response.json()))
+        Alert.alert('Ошибка', getErrorMessage(response.json()))
       }
     } catch {
-      Alert.alert('Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
     }
   }
   const handleStudentsChange = (updatedStudents: StudentsValueResponse[]) => {

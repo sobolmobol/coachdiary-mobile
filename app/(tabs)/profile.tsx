@@ -15,6 +15,7 @@ export default function Profile() {
   const [lastName, setLastName] = useState('')
   const [patronymic, setPatronymic] = useState('')
   const [email, setEmail] = useState('')
+  const [role, setRole] = useState('')
   const [displayName, setDisplayName] = useState('')
   const [currentEmail, setCurrentEmail] = useState('')
   const [displayLastName, setDisplayLastName] = useState('')
@@ -38,15 +39,15 @@ export default function Profile() {
       }
       const response = await patch('/profile/change_details/', req)
       if (response.ok) {
-        Alert.alert('Данные успешно обновлены!')
+        Alert.alert('Успех', 'Данные обновлены!')
         setDisplayName(name)
         setDisplayLastName(lastName)
         setDisplayPatronymic(patronymic)
       } else {
-        Alert.alert(getErrorMessage(response.json()))
+        Alert.alert('Ошибка', getErrorMessage(await response.json()))
       }
     } catch {
-      Alert.alert('Ошибка подключения')
+      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
     }
   }
   async function logOut() {
@@ -59,13 +60,13 @@ export default function Profile() {
       }
       const response = await patch('/profile/change_email/', req)
       if (response.ok) {
-        Alert.alert('Почта успешно обновлена!')
+        Alert.alert('Успех', 'Почта обновлена')
         setCurrentEmail(email)
       } else {
-        Alert.alert(getErrorMessage(response.json()))
+        Alert.alert('Ошибка', getErrorMessage(response.json()))
       }
     } catch {
-      Alert.alert('Ошибка подключения')
+      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
     }
   }
   async function changePassword() {
@@ -77,15 +78,15 @@ export default function Profile() {
       }
       const response = await put('/profile/change_password/', req)
       if (response.ok) {
-        Alert.alert('Пароль успешно обновлен!')
+        Alert.alert('Успех', 'Пароль обновлен')
         setOldPassword('')
         setConfPassword('')
         setPassword('')
       } else {
-        Alert.alert(getErrorMessage(response.json()))
+        Alert.alert('Ошибка', getErrorMessage(response.json()))
       }
     } catch {
-      Alert.alert('Ошибка подключения')
+      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
     }
   }
   async function getProfile() {
@@ -102,11 +103,12 @@ export default function Profile() {
         setDisplayPatronymic(data.patronymic)
         setCurrentEmail(data.email)
         setIsProfileLoaded(true)
+        setRole(data.role)
       } else {
-        Alert.alert(getErrorMessage(response.json()))
+        Alert.alert('Ошибка', getErrorMessage(response.json()))
       }
     } catch {
-      Alert.alert('Ошибка подключения')
+      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
     }
   }
   const handlePaswordState = () => {
@@ -158,7 +160,7 @@ export default function Profile() {
               {`${displayLastName} ${displayName} ${displayPatronymic}`}
             </Text>
             <Text className="text-s text-secondary-0/80 text-center">
-              учитель физической культутры
+              {role === 'teacher' ? 'учитель физической культуры' : ''}
             </Text>
           </View>
           <CustomButton
