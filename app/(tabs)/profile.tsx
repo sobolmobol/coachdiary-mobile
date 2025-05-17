@@ -1,4 +1,4 @@
-import { Alert, Text, View } from 'react-native'
+import { Alert, Text, View, ScrollView } from 'react-native'
 import { CustomButton } from '@/components/Button'
 import { Image } from '@/components/ui/image'
 import { Input, InputField, InputIcon, InputSlot } from '@/components/ui/input'
@@ -8,6 +8,7 @@ import { get, patch, getErrorMessage, put } from '@/services/utils'
 import { ProfileResponse, DetailRequest, PaswordRequest } from '@/types/types'
 import { logout } from '@/services/user'
 import { useRouter } from 'expo-router'
+
 
 export default function Profile() {
   const [isProfileLoaded, setIsProfileLoaded] = useState(false)
@@ -146,7 +147,7 @@ export default function Profile() {
       <View className="w-full h-1/3 bg-primary-0 rounded-b-custom-big flex justify-center items-center"></View>
       <View className="w-full h-2/3 bg-background-1"></View>
       <View className="z-40 absolute w-full h-full flex justify-evenly items-center">
-        <View className="w-[90%] h-[95%] bg-background-1 shadow-lg rounded-custom-big flex justify-center items-center gap-1 px-2">
+        <ScrollView contentContainerClassName="w-[90%] h-[95%] bg-background-1 shadow-lg rounded-custom-big flex justify-center items-center gap-1 px-2">
           <View className="w-full pt-5 flex items-center">
             <Image
               size="lg"
@@ -304,7 +305,7 @@ export default function Profile() {
               </View>
             </View>
           </View>
-        </View>
+        </ScrollView>
       </View>
     </View>
   )
