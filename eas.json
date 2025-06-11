@@ -6,13 +6,36 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_BASE": "https://coachdiary.ru/api",
+        "EXPO_PUBLIC_CLIENT_ID": "IHvJWeuZKIJMpglcLqNP8plAfvD53KVT2iNzlJh4"
+      }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+      "EXPO_PUBLIC_API_BASE": "https://coachdiary.ru/api",
+      "EXPO_PUBLIC_CLIENT_ID": "IHvJWeuZKIJMpglcLqNP8plAfvD53KVT2iNzlJh4"
+    }
+        
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_BASE": "https://coachdiary.ru/api",
+        "EXPO_PUBLIC_CLIENT_ID": "IHvJWeuZKIJMpglcLqNP8plAfvD53KVT2iNzlJh4"
+      }
     }
   },
   "submit": {
