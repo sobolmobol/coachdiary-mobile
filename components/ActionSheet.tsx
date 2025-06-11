@@ -84,6 +84,7 @@ function ActionSheet({
   setGrades,
   onFiltersAccept,
   cancelFilters,
+  userRole,
   ...props
 }: {
   isFilter?: boolean
@@ -126,6 +127,7 @@ function ActionSheet({
   setGrades?: (grades: string[]) => void
   onFiltersAccept?: () => void
   cancelFilters?: () => void
+  userRole?: string | null
 } & React.ComponentProps<typeof Actionsheet>) {
   const router = useRouter()
   const Item = React.useCallback(
@@ -451,6 +453,7 @@ function ActionSheet({
               <View className="w-[94%] p-1 rounded-custom border-2 border-primary-0 my-1">
                 <Text className="text-xs text-primary-0 font-bold text-center">{`Пол: ${info?.gender == 'f' ? 'женский' : 'мужской'}`}</Text>
               </View>
+              {userRole==='teacher' &&  
               <View className="w-full flex-row justify-around p-2 mt-2">
                 <CustomButton
                   classNameText="text-background-1"
@@ -474,7 +477,7 @@ function ActionSheet({
                   isFontSizeChangable={false}
                   onPress={deleteStudent}
                 />
-              </View>
+              </View>}
             </View>
           </ActionsheetScrollView>
         )}

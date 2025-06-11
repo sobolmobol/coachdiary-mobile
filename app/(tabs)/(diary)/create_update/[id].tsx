@@ -84,7 +84,10 @@ export default function CreateOrUpdateStudentScreen() {
         Alert.alert('Ошибка', getErrorMessage(await response.json()))
       }
     } catch {
-      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert(
+        'Ошибка',
+        'Произошла ошибка во время отправки данных, попробуйте еще раз'
+      )
     } finally {
       setStudentInfoLoading(false)
     }
@@ -146,7 +149,10 @@ export default function CreateOrUpdateStudentScreen() {
         Alert.alert('Ошибка', getErrorMessage(response.json()))
       }
     } catch {
-      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert(
+        'Ошибка',
+        'Произошла ошибка во время отправки данных, попробуйте еще раз'
+      )
     }
   }
   useEffect(() => {

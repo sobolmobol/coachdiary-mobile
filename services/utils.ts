@@ -11,7 +11,8 @@ async function getAccessToken() {
 
 export async function get(
   url: string,
-  data?: Record<string | number, unknown | unknown[]>
+  data?: Record<string | number, unknown | unknown[]>,
+  pdf = false
 ): Promise<Response> {
   const urlObj = new URL(apiBase + url)
   for (const key in data) {
@@ -24,14 +25,22 @@ export async function get(
     }
   }
   const accessToken = await getAccessToken()
-  const response = await fetch(urlObj.toString(), {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-    },
-  })
-  if (response.status === 403) {
+  const response = pdf
+    ? await fetch(urlObj.toString(), {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/pdf',
+        },
+      })
+    : await fetch(urlObj.toString(), {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      })
+  if (response.status === 401) {
     Alert.alert('Время перезойти в аккаунт!')
     router.replace('/login')
   }
@@ -51,7 +60,7 @@ export async function post(
     },
     body: data ? JSON.stringify(data) : undefined,
   })
-  if (response.status === 403) {
+  if (response.status === 401) {
     Alert.alert('Время перезойти в аккаунт!')
     router.replace('/login')
   }
@@ -71,7 +80,7 @@ export async function put(
     },
     body: data ? JSON.stringify(data) : undefined,
   })
-  if (response.status === 403) {
+  if (response.status === 401) {
     Alert.alert('Время перезойти в аккаунт!')
     router.replace('/login')
   }
@@ -91,7 +100,7 @@ export async function patch(
     },
     body: data ? JSON.stringify(data) : undefined,
   })
-  if (response.status === 403) {
+  if (response.status === 401) {
     Alert.alert('Время перезойти в аккаунт!')
     router.replace('/login')
   }
@@ -107,7 +116,7 @@ export async function del(url: string): Promise<Response> {
       'Content-Type': 'application/json',
     },
   })
-  if (response.status === 403) {
+  if (response.status === 401) {
     Alert.alert('Время перезойти в аккаунт!')
     router.replace('/login')
   }

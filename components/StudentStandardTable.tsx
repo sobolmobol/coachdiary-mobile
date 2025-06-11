@@ -24,16 +24,17 @@ export default function StudentStandardTable({
   standards,
   onStandardChange,
   sumGrade,
-  ...props
+  role = null
 }: {
   standards: StandardByLevel[]
   onStandardChange: (updatedStandards: StandardByLevel[]) => void
   sumGrade: number
-} & React.ComponentProps<typeof Table>) {
+  role: string | null
+} ) {
   const [currentPage, setCurrentPage] = useState(1)
-  const [updatedStandards, setUpdatedStandards] = useState<
-    StandardByLevel[]
-  >([])
+  const [updatedStandards, setUpdatedStandards] = useState<StandardByLevel[]>(
+    []
+  )
   const standardsPerPage = 7
   const totalPages = Math.ceil(updatedStandards.length / standardsPerPage)
   const currentStandards = updatedStandards.slice(
@@ -99,6 +100,7 @@ export default function StudentStandardTable({
               {standard.standard.has_numeric_value ? (
                 <>
                   <TableData className="px-2 flex-[1.5] min-w-[70px] items-center justify-center flex">
+                    {role === 'teacher' ? 
                     <Input
                       variant="rounded"
                       size="sm"
@@ -111,7 +113,14 @@ export default function StudentStandardTable({
                           handleInputChange(standard.standard.id, 'value', text)
                         }
                       />
-                    </Input>
+                    </Input> : 
+                    <View
+                      className={`w-7 h-7 rounded-custom items-center justify-center`}
+                    >
+                      <Text className="text-typography-1 text-s font-extrabold text-center">
+                        {standard.value}
+                      </Text>
+                    </View>}
                   </TableData>
 
                   <TableData className="px-2 flex-[1.5] min-w-[70px] items-center justify-center flex">
@@ -129,6 +138,7 @@ export default function StudentStandardTable({
                   <TableData className="px-2 flex-[1.5] min-w-[70px] flex items-center justify-center"></TableData>
 
                   <TableData className="px-2 flex-[1.5] min-w-[70px] flex items-center justify-end">
+                    {role === 'teacher' ? 
                     <Input
                       variant="rounded"
                       size="sm"
@@ -141,7 +151,15 @@ export default function StudentStandardTable({
                           handleInputChange(standard.standard.id, 'grade', text)
                         }
                       />
-                    </Input>
+                    </Input> : 
+                    <View
+                      className={`bg-${getGradeColor(standard.grade ?? 0)} w-7 h-7 rounded-custom items-center justify-center`}
+                    >
+                      <Text className="text-background-1 text-s font-extrabold text-center">
+                        {standard.grade}
+                      </Text>
+                    </View>
+                    }
                   </TableData>
                 </>
               )}
@@ -158,7 +176,7 @@ export default function StudentStandardTable({
               </TableData>
               <TableData className="px-2 flex-[1.5] min-w-[70px]"></TableData>
               <TableData className="text-m text-tertiary-0 font-bold text-center px-2 flex-1 min-w-[70px]">
-                {sumGrade}
+                {sumGrade.toFixed(2)}
               </TableData>
             </TableRow>
           </View>
@@ -180,13 +198,13 @@ export default function StudentStandardTable({
               size="xs"
               classNameText="text-background-1"
             />
-            <CustomButton
+            {role === 'teacher' && <CustomButton
               buttonText="Сохранить"
               color="blue"
               size="xs"
               onPress={() => saveData()}
               classNameText="text-background-1"
-            />
+            />}
           </View>
         </TableFooter>
       </View>

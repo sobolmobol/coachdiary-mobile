@@ -14,8 +14,10 @@ import { get, post, getErrorMessage } from '@/services/utils'
 import { Fab } from '@/components/ui/fab'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import { useRouter, useFocusEffect } from 'expo-router'
+import { useUserRole } from '@/hooks/useUserRole'
 
 export default function Index() {
+  const {userId, role, loading} = useUserRole()
   const [showActionsheetStand, setShowActionsheetStand] = useState(false)
   const [showActionsheetClasses, setShowActionsheetClasses] = useState(false)
   const [showActionsheetFilters, setShowActionsheetFilters] = useState(false)
@@ -37,8 +39,10 @@ export default function Index() {
   const [gender, setGender] = useState<Gender | null>(null)
   const [grades, setGrades] = useState<string[]>([])
   const getAsyncData = async () => {
-    await getClasses()
-    await getStandards()
+    if(role === 'teacher'){
+      await getClasses()
+      await getStandards()
+    }
   }
   const [selectedClass, setSelectedClass] = useState<{
     class_number: number
@@ -82,7 +86,7 @@ export default function Index() {
       const req: StudentValueRequest[] = updatedStudents.map((student) => ({
         student_id: student.id,
         standard_id: selectedStandard.id,
-        value: standardType === 'physical' ? student.value : student.grade,
+        value: standardType === 'physical' ? student.average_value : student.average_grade,
       }))
       const response = await post('/students/results/create/', req)
       if (response.ok) {
@@ -92,21 +96,27 @@ export default function Index() {
         Alert.alert('Ошибка', getErrorMessage(await response.json()))
       }
     } catch {
-      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert(
+        'Ошибка',
+        'Произошла ошибка во время отправки данных, попробуйте еще раз'
+      )
     }
   }
   async function getClasses() {
     try {
       setIsLoadingClasses(true)
       const response = await get('/classes/')
-      if(response.ok){
+      if (response.ok) {
         const classes: ClassResponse[] = await response.json()
         setClasses(classes)
       } else {
         Alert.alert('Ошибка', getErrorMessage(response.json()))
       }
     } catch {
-      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert(
+        'Ошибка',
+        'Произошла ошибка во время отправки данных, попробуйте еще раз'
+      )
     } finally {
       setIsLoadingClasses(false)
     }
@@ -115,14 +125,17 @@ export default function Index() {
     try {
       setIsLoadingStand(true)
       const response = await get('/standards/')
-      if(response.ok){
+      if (response.ok) {
         const stds: StandardResponse[] = await response.json()
         setStandards(stds)
       } else {
         Alert.alert('Ошибка', getErrorMessage(response.json()))
       }
     } catch {
-      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert(
+        'Ошибка',
+        'Произошла ошибка во время отправки данных, попробуйте еще раз'
+      )
     } finally {
       setIsLoadingStand(false)
     }
@@ -131,9 +144,9 @@ export default function Index() {
     try {
       const response = await get('/students/results/list/', {
         'class_id[]': getClassId(),
-        standard_id: selectedStandard.id,
+        'standard_id[]': selectedStandard.id,
       })
-      if (response.ok){
+      if (response.ok) {
         const data: StudentsValueResponse[] = await response.json()
         setStudents(data)
         setFilteredStudents(data)
@@ -141,7 +154,10 @@ export default function Index() {
         Alert.alert('Ошибка', getErrorMessage(response.json()))
       }
     } catch {
-      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert(
+        'Ошибка',
+        'Произошла ошибка во время отправки данных, попробуйте еще раз'
+      )
     }
   }
   const handleStudentsChange = (updatedStudents: StudentsValueResponse[]) => {
@@ -157,11 +173,11 @@ export default function Index() {
         setStudents([])
         setSelectedClass({
           class_number: -1,
-          class_letter: ''
+          class_letter: '',
         })
         setSelectedStandard({
           id: -1,
-          standard: ''
+          standard: '',
         })
       }
     }, [])
@@ -175,11 +191,11 @@ export default function Index() {
     })
   }, [selectedStandard])
   useEffect(() => {
+    console.log(selectedStandard.id, selectedClass.class_number)
     if (selectedStandard.id !== -1 && selectedClass.class_number !== -1) {
       getStudents()
     }
   }, [selectedStandard, selectedClass])
-
 
   function acceptFilters() {
     setFilteredStudents(
@@ -192,7 +208,7 @@ export default function Index() {
             const year = +item.birthday.slice(0, 4)
             return (
               (gender ? item.gender === gender : true) &&
-              (grades.length ? grades.includes(String(item.grade)) : true) &&
+              (grades.length ? grades.includes(String(item.average_grade)) : true) &&
               (yearFrom ? year >= yearFrom : true) &&
               (yearBefore ? year <= yearBefore : true)
             )
@@ -206,10 +222,9 @@ export default function Index() {
     setYearFrom(null)
     setFilteredStudents(students)
   }
-
   return (
     <View className="bg-background-1 flex-1">
-      <View className="w-full flex-row justify-between p-4">
+      <View className="w-full flex-row justify-between p-4 gap-2">
         <CustomButton
           classNameText="text-background-1"
           color={selectedClass.class_letter == '' ? 'blue' : 'orange'}
@@ -248,7 +263,9 @@ export default function Index() {
           classNameText="text-background-1"
           color="blue"
           isAddFilterIcon
-          onPress={() => setShowActionsheetFilters(true)}
+          onPress={() => {
+            setShowActionsheetFilters(true)
+          }}
           size="sm"
         />
         <ActionSheet
@@ -293,7 +310,9 @@ export default function Index() {
           onStudentsChange={handleStudentsChange}
           standardType={standardType}
           students={filteredStudents}
-          areChosenClaAndSt={selectedStandard.id !== -1 && selectedClass.class_number !== -1}
+          areChosenClaAndSt={
+            selectedStandard.id !== -1 && selectedClass.class_number !== -1
+          }
         />
       </View>
       <Fab

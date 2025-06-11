@@ -3,6 +3,8 @@ import {
   CreateUserRequest,
   TokenRefreshRequest,
   TokenRevokeRequest,
+  RegisterRequestByCode,
+  InfoByCode,
 } from '@/types/types'
 import { getItem, setItem, removeItem } from '@/store/secureStorage'
 import { Router } from 'expo-router'
@@ -59,7 +61,10 @@ export async function login(email: string, password: string, router: Router) {
       Alert.alert('Ошибка', getErrorMessage(await response.json()))
     }
   } catch {
-    Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
+    Alert.alert(
+      'Ошибка',
+      'Произошла ошибка во время отправки данных, попробуйте еще раз'
+    )
   }
 }
 export async function refreshToken(router: Router) {
@@ -91,10 +96,16 @@ export async function refreshToken(router: Router) {
       }
     } else {
       logout(router)
-      console.log('Предупреждение', 'Сессия истекла, необходимо перезойти в аккаунт')
+      console.log(
+        'Предупреждение',
+        'Сессия истекла, необходимо перезойти в аккаунт'
+      )
     }
   } catch {
-    Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
+    Alert.alert(
+      'Ошибка',
+      'Произошла ошибка во время отправки данных, попробуйте еще раз'
+    )
   }
 }
 
@@ -137,7 +148,10 @@ export async function logout(router: Router) {
       Alert.alert('Ошибка', getErrorMessage(await response.json()))
     }
   } catch {
-    Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
+    Alert.alert(
+      'Ошибка',
+      'Произошла ошибка во время отправки данных, попробуйте еще раз'
+    )
   }
 }
 
@@ -160,13 +174,74 @@ export async function signUp(req: CreateUserRequest, router: Router) {
     if (response.ok) {
       Alert.alert(
         'Вы успешно зарегистрировались!',
-        'Теперь Вы можете войти в аккаунт!'
+        'Теперь Вы можете войти в аккаунт! Подвердите, пожалуйста, почту!'
       )
       router.navigate('/login')
     } else {
       Alert.alert('Ошибка', getErrorMessage(await response.json()))
     }
   } catch {
-    Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
+    Alert.alert(
+      'Ошибка',
+      'Произошла ошибка во время отправки данных, попробуйте еще раз'
+    )
+  }
+}
+
+export async function signUpInv(req: RegisterRequestByCode, router: Router) {
+  try {
+    if (!req) {
+      console.log('Пустое тело запроса')
+      return
+    }
+    const response = await fetch(
+      process.env.EXPO_PUBLIC_API_BASE + '/create-user/from-invitation/',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: req ? JSON.stringify(req) : undefined,
+      }
+    )
+    if (response.ok) {
+      Alert.alert(
+        'Вы успешно зарегистрировались!',
+        'Теперь Вы можете войти в аккаунт! Подвердите, пожалуйста, почту!'
+      )
+      router.navigate('/login')
+    } else {
+      Alert.alert('Ошибка', getErrorMessage(await response.json()))
+    }
+  } catch {
+    Alert.alert(
+      'Ошибка',
+      'Произошла ошибка во время отправки данных, попробуйте еще раз'
+    )
+  }
+}
+export async function StInfoByCode(invite_code: string) {
+  try {
+    const response = await fetch(
+      process.env.EXPO_PUBLIC_API_BASE +
+        `/create-user/from-invitation/${invite_code}/`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+    if (response.ok) {
+      const data: InfoByCode = await response.json()
+      return data
+    } else {
+      Alert.alert('Ошибка', getErrorMessage(await response.json()))
+    }
+  } catch {
+    Alert.alert(
+      'Ошибка',
+      'Произошла ошибка во время отправки данных, попробуйте еще раз'
+    )
   }
 }

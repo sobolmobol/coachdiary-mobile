@@ -45,8 +45,14 @@ export type StudentsValueResponse = {
   }
   birthday: string
   gender: Gender
-  value: number | null
-  grade: number | null
+  average_value: number | null,
+  average_grade: number | null,
+  standards_details: 
+  {
+    standard_id: number,
+    value: number | null,
+    grade: number | null
+  }[]
 }
 
 export type StudentValueRequest = {
@@ -100,6 +106,7 @@ export type ProfileResponse = {
   patronymic: string
   full_name: string
   role: string
+  is_email_verified: boolean
 }
 export type DetailRequest = {
   first_name: string
@@ -126,6 +133,7 @@ export type StudentResponse = {
   birthday: string
   gender: Gender
   invitation_link: string
+  is_used_invitation: boolean
 }
 export type StudentStandardResponse = {
   standards: {
@@ -134,9 +142,9 @@ export type StudentStandardResponse = {
       name: string
       has_numeric_value: boolean
     }
-      level_number: number
-      value: number | null 
-      grade: number | null
+    level_number: number
+    value: number | null
+    grade: number | null
   }[]
   summary_grade: 4
 }
@@ -148,7 +156,7 @@ export interface StandardByLevel {
     has_numeric_value: boolean
   }
   level_number: number
-  value: number | null 
+  value: number | null
   grade: number | null
 }
 export type StudentRequest = {
@@ -173,4 +181,32 @@ export type NewStudentRequest = {
   }
   birthday: string
   gender: Gender
+}
+
+export type RegisterRequestByCode = {
+  email: string
+  password: string
+  confirm_password: string
+  first_name: string
+  last_name: string
+  patronymic: string
+  invite_code: string
+}
+
+export type InfoByCode = {
+  class_info: {
+    id: number
+    number: number
+    class_name: string
+  }
+  invitation: {
+    code: string
+    is_used: Boolean
+  }
+  student: {
+    id: number
+    first_name: string
+    last_name: string
+    patronymic: string
+  }
 }

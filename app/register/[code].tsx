@@ -1,15 +1,18 @@
 import { View, Text, Alert } from 'react-native'
+
 import { Image } from '@/components/ui/image'
 import { Divider } from '@/components/ui/divider'
 import { Input, InputField, InputSlot, InputIcon } from '@/components/ui/input'
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { EyeIcon, EyeOffIcon } from '@/components/ui/icon'
 import { CustomButton } from '@/components/Button'
 import { Link, LinkText } from '@/components/ui/link'
-import { useRouter } from 'expo-router'
-import { signUp } from '@/services/user'
+import { signUp, signUpInv, StInfoByCode } from '@/services/user'
+import { useLocalSearchParams, useFocusEffect, useRouter } from 'expo-router'
+import { InfoByCode } from '@/types/types'
 
-export default function LoginScreen() {
+export default function RegisterScreen() {
+  const { code } = useLocalSearchParams()
   const [showPassword, setShowPassword] = useState(false)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -17,7 +20,32 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confPassword, setConfPassword] = useState('')
+  const [isEmailAndPasswordDisabled, setIsEmailAndPasswordDisabled] =
+    useState(false)
+  const [isNameDisabled, setIsNameDisabled] = useState(false)
   const router = useRouter()
+
+  async function getStInfo() {
+    if (code !== 'new') {
+      const inviteCode = Array.isArray(code) ? code[0] : code
+      const data = await StInfoByCode(inviteCode)
+      if (!data) {
+        router.push('/login')
+        return
+      }
+      setIsNameDisabled(true)
+      setFirstName(data.student.first_name)
+      setLastName(data.student.last_name)
+      setPatronymic(data.student.patronymic)
+      if (data.invitation.is_used) {
+        setIsEmailAndPasswordDisabled(true)
+        Alert.alert(
+          'Пользователь уже зарегистрирован',
+          'Перейдите на страницу входа'
+        )
+      }
+    }
+  }
   function isDataCorrect() {
     const isName = firstName.length !== 0 || firstName.length !== 0
     const isPassword = password !== confPassword || password.length !== 0
@@ -26,7 +54,10 @@ export default function LoginScreen() {
       Alert.alert('Предупреждение', 'Введите фамилию и имя')
     }
     if (!isPassword) {
-      Alert.alert('Предупреждение', 'Поля паролей должны быть не пустыми и должны совпадать')
+      Alert.alert(
+        'Предупреждение',
+        'Поля паролей должны быть не пустыми и должны совпадать'
+      )
     }
     if (!isEmail) {
       Alert.alert('Предупреждение', 'Введите почту')
@@ -34,7 +65,7 @@ export default function LoginScreen() {
     return isName || isPassword || isEmail
   }
   function register() {
-    if (isDataCorrect()) {
+    if (isDataCorrect() && code === 'new') {
       signUp(
         {
           first_name: firstName.trim(),
@@ -46,6 +77,20 @@ export default function LoginScreen() {
         },
         router
       )
+    } else if (isDataCorrect() && code !== 'new') {
+      const inviteCode = Array.isArray(code) ? code[0] : code
+      signUpInv(
+        {
+          first_name: firstName.trim(),
+          last_name: lastName.trim(),
+          email: email.trim(),
+          password: password,
+          confirm_password: confPassword,
+          patronymic: patronymic.trim(),
+          invite_code: inviteCode,
+        },
+        router
+      )
     }
   }
   const handleState = () => {
@@ -53,6 +98,19 @@ export default function LoginScreen() {
       return !showState
     })
   }
+  useFocusEffect(
+    useCallback(() => {
+      getStInfo()
+      return () => {
+        setFirstName('')
+        setLastName('')
+        setPatronymic('')
+        setEmail('')
+        setPassword('')
+        setConfPassword('')
+      }
+    }, [])
+  )
   return (
     <View className="w-full h-full bg-background-1 relative">
       <View className="w-full h-1/3 bg-primary-0 rounded-b-custom-big flex justify-center items-center"></View>
@@ -61,7 +119,7 @@ export default function LoginScreen() {
         <View className="bg-background-1 w-[90%] h-[80%] rounded-custom-big flex items-center justify-evenly shadow-md">
           <Image
             size="lg"
-            source={require('../assets/images/mobile_logo_blue.png')}
+            source={require('../../assets/images/mobile_logo_blue.png')}
             alt="image"
             className="aspect-[1280/473] w-full"
           />
@@ -71,7 +129,10 @@ export default function LoginScreen() {
                 Регистрация
               </Text>
             </View>
-            <Input className="rounded-custom border-tertiary-0/50 bg-tertiary-0/30">
+            <Input
+              className="rounded-custom border-tertiary-0/50 bg-tertiary-0/30"
+              isDisabled={isNameDisabled}
+            >
               <InputField
                 className="text-typography-1"
                 placeholder="Фамилия"
@@ -81,7 +142,10 @@ export default function LoginScreen() {
                 }}
               />
             </Input>
-            <Input className="rounded-custom border-tertiary-0/50 bg-tertiary-0/30">
+            <Input
+              className="rounded-custom border-tertiary-0/50 bg-tertiary-0/30"
+              isDisabled={isNameDisabled}
+            >
               <InputField
                 className="text-typography-1"
                 placeholder="Имя"
@@ -91,7 +155,10 @@ export default function LoginScreen() {
                 }}
               />
             </Input>
-            <Input className="rounded-custom border-tertiary-0/50 bg-tertiary-0/30">
+            <Input
+              className="rounded-custom border-tertiary-0/50 bg-tertiary-0/30"
+              isDisabled={isNameDisabled}
+            >
               <InputField
                 className="text-typography-1"
                 placeholder="Отчество"
@@ -101,7 +168,10 @@ export default function LoginScreen() {
                 }}
               />
             </Input>
-            <Input className="rounded-custom border-tertiary-0/50 bg-tertiary-0/30">
+            <Input
+              className="rounded-custom border-tertiary-0/50 bg-tertiary-0/30"
+              isDisabled={isEmailAndPasswordDisabled}
+            >
               <InputField
                 className="text-typography-1"
                 placeholder="Почта"
@@ -112,7 +182,10 @@ export default function LoginScreen() {
                 }}
               />
             </Input>
-            <Input className="rounded-custom border-tertiary-0/50 bg-tertiary-0/30">
+            <Input
+              className="rounded-custom border-tertiary-0/50 bg-tertiary-0/30"
+              isDisabled={isEmailAndPasswordDisabled}
+            >
               <InputField
                 placeholder="Пароль"
                 type={showPassword ? 'text' : 'password'}
@@ -128,7 +201,10 @@ export default function LoginScreen() {
                 />
               </InputSlot>
             </Input>
-            <Input className="rounded-custom border-tertiary-0/50 bg-tertiary-0/30">
+            <Input
+              className="rounded-custom border-tertiary-0/50 bg-tertiary-0/30"
+              isDisabled={isEmailAndPasswordDisabled}
+            >
               <InputField
                 placeholder="Повторить пароль"
                 type={showPassword ? 'text' : 'password'}
@@ -168,9 +244,23 @@ export default function LoginScreen() {
             <View className="flex-row justify-center items-start gap-1">
               <Text className="text-typography-1">У вас уже есть аккаунт?</Text>
               <Link onPress={() => router.push('/login')}>
-                <LinkText className="text-typography-1">Войдите.</LinkText>
+                <LinkText className="text-primary-0">Войдите.</LinkText>
               </Link>
             </View>
+            {code === 'new' ? (
+              <View className="flex-row justify-center items-start gap-1">
+                <Text className="text-typography-1">
+                  У вас есть код приглашения?
+                </Text>
+                <Link onPress={() => router.push('/join_code')}>
+                  <LinkText className="text-primary-0">
+                    Войдите по коду.
+                  </LinkText>
+                </Link>
+              </View>
+            ) : (
+              ''
+            )}
           </View>
         </View>
       </View>

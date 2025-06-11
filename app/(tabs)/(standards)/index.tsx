@@ -2,16 +2,14 @@ import { FlatList, Text, View, TouchableOpacity, Alert } from 'react-native'
 import StandardTable from '@/components/StandardTable'
 import { useState, useEffect, useCallback } from 'react'
 import { Switch } from '@/components/ui/switch'
-import {
-  StandardResponse,
-  Gender,
-} from '@/types/types'
+import { StandardResponse, Gender } from '@/types/types'
 import { Fab } from '@/components/ui/fab'
 import AntDesign from '@expo/vector-icons/AntDesign'
-import { useRouter, useFocusEffect  } from 'expo-router'
+import { useRouter, useFocusEffect } from 'expo-router'
 import { get, del, getErrorMessage } from '@/services/utils'
 import { CustomButton } from '@/components/Button'
 import { ActionSheet } from '@/components/ActionSheet'
+import { useUserRole } from '@/hooks/useUserRole'
 
 interface ItemData {
   id: number
@@ -25,11 +23,16 @@ interface TechItemProps {
 }
 export default function StandardScreen() {
   const router = useRouter()
+
   const [standards, setStandards] = useState<StandardResponse[]>([])
-  const [filtredStandardsG, setFilteredStandardsG] =
-    useState<Record<string, number | string> | null>(null)
-  const [filtredStandardsB, setFilteredStandardsB] =
-    useState<Record<string, number | string> | null>(null)
+  const [filtredStandardsG, setFilteredStandardsG] = useState<Record<
+    string,
+    number | string
+  > | null>(null)
+  const [filtredStandardsB, setFilteredStandardsB] = useState<Record<
+    string,
+    number | string
+  > | null>(null)
   const [selectedClass, setSelectedClass] = useState(-1)
   const [isTechnical, setIsTechnical] = useState(false)
   const [showActionsheetClass, setShowActionsheetClass] = useState(false)
@@ -87,14 +90,17 @@ export default function StandardScreen() {
     [selectedTechStand]
   )
   function goToUpdateScreen() {
-    const id = isTechnical ? selectedTechStand.id : selectedFisStand.id 
-    if(id !== -1){ 
+    const id = isTechnical ? selectedTechStand.id : selectedFisStand.id
+    if (id !== -1) {
       router.push({
         pathname: '/(tabs)/(standards)/create_update/[id]',
-        params: { id: id ?? '' }
-      })  
-    } else{
-      Alert.alert('Предупреждение', 'Выберите норматив, чтобы его редактировать')
+        params: { id: id ?? '' },
+      })
+    } else {
+      Alert.alert(
+        'Предупреждение',
+        'Выберите норматив, чтобы его редактировать'
+      )
     }
   }
   function getStandardsByClass(
@@ -146,51 +152,58 @@ export default function StandardScreen() {
         Alert.alert('Ошибка', getErrorMessage(await response.json()))
       }
     } catch {
-      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert(
+        'Ошибка',
+        'Произошла ошибка во время отправки данных, попробуйте еще раз'
+      )
     }
   }
 
-  async function deleteStandard(){
+  async function deleteStandard() {
     Alert.alert(
-    'Удаление норматива',
-    'Вы уверены, что хотите удалить этот норматив? Это действие нельзя отменить.',
-  [
-    {
-      text: 'Отмена',
-      style: 'cancel',
-    },
-    {
-      text: 'Удалить',
-      style: 'destructive',
-      onPress: async () => {
-        const id = isTechnical ? selectedTechStand.id : selectedFisStand.id 
-        if(id !== -1) {
-          try {
-            const response = await del(`/standards/${id}/`)
-            if (response.ok){
-              Alert.alert('Норматив успешно удален')
-              getStandards()
+      'Удаление норматива',
+      'Вы уверены, что хотите удалить этот норматив? Это действие нельзя отменить.',
+      [
+        {
+          text: 'Отмена',
+          style: 'cancel',
+        },
+        {
+          text: 'Удалить',
+          style: 'destructive',
+          onPress: async () => {
+            const id = isTechnical ? selectedTechStand.id : selectedFisStand.id
+            if (id !== -1) {
+              try {
+                const response = await del(`/standards/${id}/`)
+                if (response.ok) {
+                  Alert.alert('Норматив успешно удален')
+                  getStandards()
+                } else {
+                  Alert.alert('Ошибка', getErrorMessage(await response.json()))
+                }
+              } catch {
+                Alert.alert(
+                  'Ошибка',
+                  'Произошла ошибка во время отправки данных, попробуйте еще раз'
+                )
+              }
             } else {
-              Alert.alert('Ошибка', getErrorMessage(await response.json()))
+              Alert.alert(
+                'Предупреждение',
+                'Выберите норматив, чтобы его удалить'
+              )
             }
-          } catch{
-            Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
-          }
-        } else {
-          Alert.alert('Предупреждение', 'Выберите норматив, чтобы его удалить')
-        }
-      },
-    },
-  ],
-  { cancelable: true }
-)
+          },
+        },
+      ],
+      { cancelable: true }
+    )
   }
 
   useEffect(() => {
     const filteredStandardsG = getStandardsByClassAndGender('f')
-    console.log('filteredStandardsG', filteredStandardsG)
     const filteredStandardsB = getStandardsByClassAndGender('m')
-    console.log('filteredStandardsB', filteredStandardsB)
     setFilteredStandardsG(filteredStandardsG)
     setFilteredStandardsB(filteredStandardsB)
   }, [selectedClass, selectedFisStand])
@@ -205,10 +218,16 @@ export default function StandardScreen() {
   useEffect(() => {
     const id = isTechnical ? selectedTechStand.id : selectedFisStand.id
     if (id !== -1) {
-      const uniqueLevels = Array.from(new Set(standards.find(item => item.id === id)?.levels.map(item => item.level_number)))
+      const uniqueLevels = Array.from(
+        new Set(
+          standards
+            .find((item) => item.id === id)
+            ?.levels.map((item) => item.level_number)
+        )
+      )
       setClasses(uniqueLevels)
     } else {
-      setClasses(Array.from({length: 11}, (_, i) => i + 1))
+      setClasses(Array.from({ length: 11 }, (_, i) => i + 1))
     }
   }, [isTechnical, standards, selectedFisStand, selectedTechStand])
 
@@ -253,17 +272,13 @@ export default function StandardScreen() {
               <Text className="text-m text-primary-0 text-center font-semibold">
                 Девочки
               </Text>
-              <StandardTable
-                standards={filtredStandardsG ?? {}}
-              />
+              <StandardTable standards={filtredStandardsG ?? {}} />
             </View>
             <View className="w-full flex items-between gap-3">
               <Text className="text-m text-primary-0 text-center font-semibold">
                 Мальчики
               </Text>
-              <StandardTable
-                standards={filtredStandardsB ?? {}}
-              />
+              <StandardTable standards={filtredStandardsB ?? {}} />
             </View>
           </View>
           <ActionSheet

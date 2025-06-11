@@ -4,11 +4,11 @@ import { Image } from '@/components/ui/image'
 import { Input, InputField, InputIcon, InputSlot } from '@/components/ui/input'
 import { useEffect, useState } from 'react'
 import { EyeIcon, EyeOffIcon } from '@/components/ui/icon'
-import { get, patch, getErrorMessage, put } from '@/services/utils'
+import { get, patch, getErrorMessage } from '@/services/utils'
 import { ProfileResponse, DetailRequest, PaswordRequest } from '@/types/types'
 import { logout } from '@/services/user'
 import { useRouter } from 'expo-router'
-
+import { useUserRole } from '@/hooks/useUserRole'
 
 export default function Profile() {
   const [isProfileLoaded, setIsProfileLoaded] = useState(false)
@@ -27,7 +27,6 @@ export default function Profile() {
   const [password, setPassword] = useState('')
   const [confPassword, setConfPassword] = useState('')
   const router = useRouter()
-
   useEffect(() => {
     if (!isProfileLoaded) getProfile()
   }, [isProfileLoaded])
@@ -48,7 +47,10 @@ export default function Profile() {
         Alert.alert('Ошибка', getErrorMessage(await response.json()))
       }
     } catch {
-      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert(
+        'Ошибка',
+        'Произошла ошибка во время отправки данных, попробуйте еще раз'
+      )
     }
   }
   async function logOut() {
@@ -67,7 +69,10 @@ export default function Profile() {
         Alert.alert('Ошибка', getErrorMessage(response.json()))
       }
     } catch {
-      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert(
+        'Ошибка',
+        'Произошла ошибка во время отправки данных, попробуйте еще раз'
+      )
     }
   }
   async function changePassword() {
@@ -77,7 +82,7 @@ export default function Profile() {
         new_password: password,
         confirm_new_password: confPassword,
       }
-      const response = await put('/profile/change_password/', req)
+      const response = await patch('/profile/change_password/', req)
       if (response.ok) {
         Alert.alert('Успех', 'Пароль обновлен')
         setOldPassword('')
@@ -87,7 +92,10 @@ export default function Profile() {
         Alert.alert('Ошибка', getErrorMessage(response.json()))
       }
     } catch {
-      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert(
+        'Ошибка',
+        'Произошла ошибка во время отправки данных, попробуйте еще раз'
+      )
     }
   }
   async function getProfile() {
@@ -109,7 +117,10 @@ export default function Profile() {
         Alert.alert('Ошибка', getErrorMessage(response.json()))
       }
     } catch {
-      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert(
+        'Ошибка',
+        'Произошла ошибка во время отправки данных, попробуйте еще раз'
+      )
     }
   }
   const handlePaswordState = () => {
@@ -161,7 +172,7 @@ export default function Profile() {
               {`${displayLastName} ${displayName} ${displayPatronymic}`}
             </Text>
             <Text className="text-s text-secondary-0/80 text-center">
-              {role === 'teacher' ? 'учитель физической культуры' : ''}
+              {role === 'teacher' ? 'учитель физической культуры' : 'ученик'}
             </Text>
           </View>
           <CustomButton
@@ -195,7 +206,7 @@ export default function Profile() {
                 />
               </View>
             </View>
-            <View className="flex gap-1 my-1">
+            {role === 'teacher' && <View className="flex gap-1 my-1">
               <View className="w-full flex-row justify-evenly items-center p-1 gap-2">
                 <Text className="text-typography-1 w-[30%]">Фамилия</Text>
                 <Input className="rounded-custom border-tertiary-0/50 bg-tertiary-0/30 w-[60%]">
@@ -237,7 +248,7 @@ export default function Profile() {
                   onPress={async () => await changeDetails()}
                 />
               </View>
-            </View>
+            </View>}
             <View className="flex gap-1 my-1">
               <View className="w-full flex-row justify-evenly items-center p-1 gap-2">
                 <Text className="text-typography-1 w-[30%]">Старый пароль</Text>

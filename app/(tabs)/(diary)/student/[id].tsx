@@ -7,39 +7,46 @@ import {
   StudentResponse,
   StudentStandardResponse,
   StudentValueRequest,
-  StandardByLevel
+  StandardByLevel,
 } from '@/types/types'
-import  { useFocusEffect } from 'expo-router'
+import { useFocusEffect } from 'expo-router'
 import { ActionSheet } from '@/components/ActionSheet'
 import StudentStandardTable from '@/components/StudentStandardTable'
+import { useUserRole } from '@/hooks/useUserRole'
 
 export default function Student() {
+  const {userId, role, loading} = useUserRole()
   const { id } = useLocalSearchParams()
   const [studentInfoLoading, setStudentInfoLoading] = useState(true)
   const [showActionsheetInfo, setShowActionsheetInfo] = useState(false)
   const [showActionsheetClass, setShowActionsheetClass] = useState(false)
   const [studentInfo, setStudentInfo] = useState<StudentResponse | null>(null)
   const [standards, setStandards] = useState<StandardByLevel[]>([])
-  const [levels, setLevels] = useState<number[]>([...Array(11).keys()].map((i) => i + 1))
+  const [levels, setLevels] = useState<number[]>(
+    [...Array(11).keys()].map((i) => i + 1)
+  )
   const [selectedLevel, setSelectedLevel] = useState<number>(1)
   const [sumGrade, setSumGrade] = useState<number>(0)
   const handleCloseInfo = () => setShowActionsheetInfo(false)
   const handleCloseClass = () => setShowActionsheetClass(false)
 
   async function getStandards() {
-    try{
+    try {
       const response = await get(`/students/${id}/standards/`, {
-        level_number: selectedLevel
+        level_number: selectedLevel,
       })
-      if(response.ok){
+      if (response.ok) {
         const data: StudentStandardResponse = await response.json()
         setStandards(data.standards)
         setSumGrade(data.summary_grade)
-      } else{
+      } else {
         Alert.alert('Ошибка', getErrorMessage(response.json()))
-      } 
+      }
     } catch {
-      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert(
+        'Ошибка',
+        'Произошла ошибка во время отправки данных, попробуйте еще раз'
+      )
     }
   }
   async function updateResults(updatedStandards: StandardByLevel[]) {
@@ -59,13 +66,14 @@ export default function Student() {
         Alert.alert('Ошибка', getErrorMessage(await response.json()))
       }
     } catch {
-      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert(
+        'Ошибка',
+        'Произошла ошибка во время отправки данных, попробуйте еще раз'
+      )
     }
   }
 
-  const handleStandardsChange = (
-    updatedStandards: StandardByLevel[]
-  ) => {
+  const handleStandardsChange = (updatedStandards: StandardByLevel[]) => {
     updateResults(updatedStandards)
     setStandards(updatedStandards)
   }
@@ -80,7 +88,10 @@ export default function Student() {
         Alert.alert('Ошибка', getErrorMessage(await response.json()))
       }
     } catch {
-      Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
+      Alert.alert(
+        'Ошибка',
+        'Произошла ошибка во время отправки данных, попробуйте еще раз'
+      )
     } finally {
       setStudentInfoLoading(false)
     }
@@ -111,7 +122,10 @@ export default function Student() {
                 Alert.alert('Ошибка', getErrorMessage(await response.json()))
               }
             } catch {
-              Alert.alert('Ошибка', 'Произошла ошибка во время отправки данных, попробуйте еще раз')
+              Alert.alert(
+                'Ошибка',
+                'Произошла ошибка во время отправки данных, попробуйте еще раз'
+              )
             }
           },
         },
@@ -119,7 +133,6 @@ export default function Student() {
       { cancelable: true }
     )
   }
-
 
   useFocusEffect(
     useCallback(() => {
@@ -149,7 +162,9 @@ export default function Student() {
     }
     getAsyncData()
   }, [selectedLevel])
-
+  if (loading) {
+    return null 
+  }
   return (
     <View className="bg-background-1 flex-1">
       <Stack.Screen
@@ -188,6 +203,7 @@ export default function Student() {
           onClose={handleCloseInfo}
           info={studentInfo}
           deleteStudent={async () => await deleteStudent()}
+          userRole={role}
         />
         <ActionSheet
           isYear
@@ -204,6 +220,7 @@ export default function Student() {
         standards={standards ?? []}
         onStandardChange={handleStandardsChange}
         sumGrade={sumGrade}
+        role={role}
       />
     </View>
   )

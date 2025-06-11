@@ -15,7 +15,6 @@ import { View, ScrollView, Text } from 'react-native'
 import { CustomButton } from '@/components/Button'
 import { Link } from 'expo-router'
 
-
 function DiaryTable({
   students,
   standardType,
@@ -64,11 +63,11 @@ function DiaryTable({
   }
   function getShortName(fullName: string) {
     return fullName
-    .split(' ')
-    .map((value, index) => {
-      return index === 0 ? value : value[0] + '.'
-    })
-    .join(' ')
+      .split(' ')
+      .map((value, index) => {
+        return index === 0 ? value : value[0] + '.'
+      })
+      .join(' ')
   }
   function getGradeColor(grade: number) {
     if (grade === 5) return 'success-0/80'
@@ -111,93 +110,97 @@ function DiaryTable({
 
       <ScrollView className="w-full max-h-90">
         <TableBody>
-          {currentStudents.length === 0 ? 
-          (areChosenClaAndSt ? 
-          <>
-            <TableRow key={0}>
-              <TableData className="text-xs font-bold text-center text-typography-1 py-2 px-1 flex-1 min-w-[50px]">
-                В этом классе ученики пока не зафиксированы
-              </TableData>
-            </TableRow>
-          </> : 
-          <>
-            <TableRow key={0}>
-              <TableData className="text-xs font-bold text-center text-typography-1 py-2 px-1 flex-1 min-w-[50px]">
-                Выберите норматив и класс, чтобы тут появились оценки
-              </TableData>
-            </TableRow>
-          </>) :
-          currentStudents.map((student, index) => (
-            <TableRow
-              key={student.id}
-              className={`border-primary-0/50 flex flex-row ${index % 2 === 0 ? 'bg-background-1' : 'bg-primary-0/20'}`}
-            >
-              <TableData className="text-xs font-bold text-center text-typography-1 py-2 px-1 flex-1 min-w-[50px]">
-                {`${student.student_class.number}${student.student_class.class_name}`}
-              </TableData>
+          {currentStudents.length === 0 ? (
+            areChosenClaAndSt ? (
+              <>
+                <TableRow key={0}>
+                  <TableData className="text-xs font-bold text-center text-typography-1 py-2 px-1 flex-1 min-w-[50px]">
+                    В этом классе ученики пока не зафиксированы
+                  </TableData>
+                </TableRow>
+              </>
+            ) : (
+              <>
+                <TableRow key={0}>
+                  <TableData className="text-xs font-bold text-center text-typography-1 py-2 px-1 flex-1 min-w-[50px]">
+                    Выберите норматив и класс, чтобы тут появились оценки
+                  </TableData>
+                </TableRow>
+              </>
+            )
+          ) : (
+            currentStudents.map((student, index) => (
+              <TableRow
+                key={student.id}
+                className={`border-primary-0/50 flex flex-row ${index % 2 === 0 ? 'bg-background-1' : 'bg-primary-0/20'}`}
+              >
+                <TableData className="text-xs font-bold text-center text-typography-1 py-2 px-1 flex-1 min-w-[50px]">
+                  {`${student.student_class.number}${student.student_class.class_name}`}
+                </TableData>
 
-              <TableData className="text-xs font-bold text-start text-typography-1 underline py-2 px-1 flex-[2] min-w-[100px]">
-                <Link
-                  href={{
-                    pathname: '/student/[id]',
-                    params: { id: student.id },
-                  }}
-                >
-                  {getShortName(student.full_name)}
-                </Link>
-              </TableData>
+                <TableData className="text-xs font-bold text-start text-typography-1 underline py-2 px-1 flex-[2] min-w-[100px]">
+                  <Link
+                    href={{
+                      pathname: '/student/[id]',
+                      params: { id: student.id },
+                    }}
+                  >
+                    {getShortName(student.full_name)}
+                  </Link>
+                </TableData>
 
-              <TableData className="text-xs font-bold text-center text-typography-1 py-2 px-2 flex-1 min-w-[30px]">
-                {student.gender === 'f' ? 'Ж' : 'М'}
-              </TableData>
+                <TableData className="text-xs font-bold text-center text-typography-1 py-2 px-2 flex-1 min-w-[30px]">
+                  {student.gender === 'f' ? 'Ж' : 'М'}
+                </TableData>
 
-              {standardType === 'physical' ? (
-                <>
+                {standardType === 'physical' ? (
+                  <>
+                    <TableData className="py-2 px-1 flex-[1.5] min-w-[70px]">
+                      <Input
+                        variant="rounded"
+                        size="sm"
+                        className="rounded-custom w-[70%]"
+                      >
+                        <InputField
+                          className="text-s text-center font-extrabold text-typography-1"
+                          value={student.average_value?.toString() ?? ''}
+                          onChangeText={(text: string) =>
+                            handleInputChange(student.id, 'value', text)
+                          }
+                        />
+                      </Input>
+                    </TableData>
+
+                    <TableData className="py-2 px-1 flex-1 min-w-[40px]">
+                      <View
+                        className={`bg-${getGradeColor(student.average_grade ?? 0)} w-7 h-7 rounded-custom items-center justify-center`}
+                      >
+                        <Text className="text-background-1 text-s font-extrabold text-center">
+                          {student.average_grade}
+                        </Text>
+                      </View>
+                    </TableData>
+                  </>
+                ) : (
                   <TableData className="py-2 px-1 flex-[1.5] min-w-[70px]">
                     <Input
                       variant="rounded"
                       size="sm"
-                      className="rounded-custom w-[70%]"
+                      className={`w-[70%] rounded-custom border-${getGradeColor(student.average_grade ?? 0)} `}
                     >
                       <InputField
-                        className="text-s text-center font-extrabold text-typography-1"
-                        value={student.value?.toString() ?? ''}
+                        className={`text-center font-extrabold text-s text-${getGradeColor(student.average_grade ?? 0)}`}
+                        value={student.average_grade?.toString() ?? ''}
                         onChangeText={(text: string) =>
-                          handleInputChange(student.id, 'value', text)
+                          handleInputChange(student.id, 'grade', text)
                         }
                       />
                     </Input>
                   </TableData>
-
-                  <TableData className="py-2 px-1 flex-1 min-w-[40px]">
-                    <View
-                      className={`bg-${getGradeColor(student.grade ?? 0)} w-7 h-7 rounded-custom items-center justify-center`}
-                    >
-                      <Text className="text-background-1 text-s font-extrabold text-center">
-                        {student.grade}
-                      </Text>
-                    </View>
-                  </TableData>
-                </>
-              ) : (
-                <TableData className="py-2 px-1 flex-[1.5] min-w-[70px]">
-                  <Input
-                    variant="rounded"
-                    size="sm"
-                    className={`w-[70%] rounded-custom border-${getGradeColor(student.grade ?? 0)} `}
-                  >
-                    <InputField
-                      className={`text-center font-extrabold text-s text-${getGradeColor(student.grade ?? 0)}`}
-                      value={student.grade?.toString() ?? ''}
-                      onChangeText={(text: string) =>
-                        handleInputChange(student.id, 'grade', text)
-                      }
-                    />
-                  </Input>
-                </TableData>
-              )}
-            </TableRow>
-          ))}
+                )}
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </ScrollView>
       <View className="w-full h-2">
