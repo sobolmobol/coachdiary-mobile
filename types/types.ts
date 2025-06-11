@@ -2,103 +2,211 @@ export type GenderNullable = Gender | null
 export type Gender = 'f' | 'm'
 
 export type StandardResponse = {
-  id: number,
-  name: string,
+  id: number
+  name: string
   has_numeric_value: boolean
   levels: {
-    id: number,
-    level_number: number,
-    low_level_value: number,
-    middle_level_value: number,
-    high_level_value: number,
-    gender: Gender,
+    id: number
+    is_lower_better: boolean
+    level_number: number
+    low_value: number
+    middle_value: number
+    high_value: number
+    gender: Gender
   }[]
 }
 
 export type StandardRequest = {
-  name: string,
+  name: string
   has_numeric_value: boolean
   levels: {
-    level_number: number,
-    low_level_value: number | null,
-    middle_level_value: number | null,
-    high_level_value: number | null,
-    gender: Gender,
+    level_number: number
+    low_value: number | null
+    middle_value: number | null
+    high_value: number | null
+    gender: Gender
   }[]
 }
 
-export type StudentResponse = {
-  id: number,
-  full_name: string,
-  student_class: {
-    number: number,
-    class_name: string
-  },
-  birthday: string,
-  gender: Gender,
-}
-
-export type StudentRequest = {
-  full_name: string,
-  student_class: {
-    number: number,
-    class_name: string
-  },
-  birthday: string,
-  gender: Gender,
-}
-
-export type ClassRequest = {
+export type ClassResponse = {
   id: number
-  class_name: string,
-  number: number,
+  class_name: string
+  number: number
   recruitment_year: number
 }
 
 export type StudentsValueResponse = {
-  id: number,
-  full_name: string,
+  id: number
+  full_name: string
   student_class: {
-    number: number,
+    id: number
+    number: number
     class_name: string
-  },
-  birthday: string,
-  gender: Gender,
-  value: number | null,
-  grade: number | null
+  }
+  birthday: string
+  gender: Gender
+  average_value: number | null,
+  average_grade: number | null,
+  standards_details: 
+  {
+    standard_id: number,
+    value: number | null,
+    grade: number | null
+  }[]
 }
 
 export type StudentValueRequest = {
-  student_id: number,
-  standard_id: number,
+  student_id: number
+  standard_id: number
   value: number | null
 }
 
-export type FilterData = {
-  gender: GenderNullable,
-  grades: (number | null)[],
-  birthYearFrom: number | null,
-  birthYearUntil: number | null
+export type TokenRequest = {
+  grant_type: string
+  username: string
+  password: string
+  client_id: string
+}
+export type TokenResponse = {
+  access_token: string
+  expiress_in: number
+  token_type: string
+  scope: string
+  refresh_token: string
+}
+export type TokenRefreshRequest = {
+  grant_type: string
+  client_id: string
+  refresh_token: string
+}
+export type TokenRevokeRequest = {
+  client_id: string
+  token: string
+}
+export type CreateUserRequest = {
+  email: string
+  password: string
+  confirm_password: string
+  first_name: string
+  last_name: string
+  patronymic: string
+}
+export type CreateUserResponse = {
+  email: string
+  first_name: string
+  last_name: string
+  patronymic: string
+  role: string
+}
+export type ProfileResponse = {
+  id: number
+  email: string
+  first_name: string
+  last_name: string
+  patronymic: string
+  full_name: string
+  role: string
+  is_email_verified: boolean
+}
+export type DetailRequest = {
+  first_name: string
+  last_name: string
+  patronymic: string
+}
+export type PaswordRequest = {
+  current_password: string
+  new_password: string
+  confirm_new_password: string
+}
+export type StudentResponse = {
+  id: number
+  first_name: string
+  last_name: string
+  patronymic: string
+  full_name: string
+  student_class: {
+    id: number
+    class_name: string
+    number: number
+    recruitment_year: number
+  }
+  birthday: string
+  gender: Gender
+  invitation_link: string
+  is_used_invitation: boolean
+}
+export type StudentStandardResponse = {
+  standards: {
+    standard: {
+      id: number
+      name: string
+      has_numeric_value: boolean
+    }
+    level_number: number
+    value: number | null
+    grade: number | null
+  }[]
+  summary_grade: 4
 }
 
-export type StudentStandardResponse = {
-  Standard: {
-    Id: number,
-    Name: string,
-    Has_numeric_value: boolean
-  },
-  Grade: number | null,
-  Value: number | null,
-  Level_number: number
+export interface StandardByLevel {
+  standard: {
+    id: number
+    name: string
+    has_numeric_value: boolean
+  }
+  level_number: number
+  value: number | null
+  grade: number | null
 }
-export type StudentStandardRequest = {
-  student_id: number,
-  standard_id: number,
-  value: number,
-  level_number: number,
+export type StudentRequest = {
+  id: number
+  first_name: string
+  last_name: string
+  patronymic: string
+  student_class: {
+    class_name: string
+    number: number
+  }
+  birthday: string
+  gender: Gender
 }
-export type Class = {
-  id: number;
-  number: number,
-  class_name: string[]
+export type NewStudentRequest = {
+  first_name: string
+  last_name: string
+  patronymic: string
+  student_class: {
+    class_name: string
+    number: number
+  }
+  birthday: string
+  gender: Gender
+}
+
+export type RegisterRequestByCode = {
+  email: string
+  password: string
+  confirm_password: string
+  first_name: string
+  last_name: string
+  patronymic: string
+  invite_code: string
+}
+
+export type InfoByCode = {
+  class_info: {
+    id: number
+    number: number
+    class_name: string
+  }
+  invitation: {
+    code: string
+    is_used: Boolean
+  }
+  student: {
+    id: number
+    first_name: string
+    last_name: string
+    patronymic: string
+  }
 }

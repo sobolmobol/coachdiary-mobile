@@ -1,50 +1,103 @@
-# Welcome to your Expo app 👋
+# Дневник тренера — мобильное приложение
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Привет! Это мой выпускной проект. Я разработала мобильное приложение для проекта **"Дневник тренера"**.  
+Приложение помогает учителям физической кульутры и тренерам вести учет сдачи нормативов, сранивать результаты и вести статистику учеников.
 
-## Get started
+## Стек
 
-1. Install dependencies
+   - TypeScript
+   - React Native 
+   - Expo
+   - gluestack-ui
+   - Nativewind
 
-   ```bash
-   npm install
+## Установка и запуск на Android
+
+1. Установи необходимые инструменты
+
+   - Node.js (рекомендуется LTS-версия — Long-Term Support)
+   - JDK (Java Development Kit) версии 11 или выше
+   - Backend: https://github.com/screenviolence/CoachDiary-backend
+
+2. Клонируй репозиторий
+
    ```
-
-2. Start the app
-
-   ```bash
-    npx expo start
+      git clone https://github.com/sobolmobol/coachdiary-mobile.git
+      cd coachdiary-mobile
    ```
+3. Установи зависимости
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+   ```
+      npm install
+   ```
+4. Создай файл eas.json
+```
+{
+  "cli": {
+    "version": ">= 15.0.2",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_BASE": "YOUR_API",
+        "EXPO_PUBLIC_CLIENT_ID": YOUR_CLIENT_ID"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+         "EXPO_PUBLIC_API_BASE": "YOUR_API",
+         "EXPO_PUBLIC_CLIENT_ID": "YOUR_CLIENT_ID"
+    }
+        
+    },
+    "production": {
+      "autoIncrement": true,
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_BASE": "YOUR_API",
+        "EXPO_PUBLIC_CLIENT_ID": "YOUR_CLIENT_ID"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+5. Установи eas-cli
+```
+   npm install -g eas-cli
+```
+6. Создай учетную запись Expo и войдите в системy
+```
+   eas login
+```
+7. Создай сборку для разработки
+```
+   eas build --platform android --profile development
+```
 
-## Learn more
+## Документация
 
-To learn more about developing your project with Expo, look at the following resources:
+- [сборка для разработки](https://docs.expo.dev/develop/development-builds/introduction/)
+- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
+- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
+- [Expo документация](https://docs.expo.dev/).
+- [Изучите туториалы](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Проект использует навигацию на основе файлов (https://docs.expo.dev/router/introduction).
 
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
