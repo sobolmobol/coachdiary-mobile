@@ -1,12 +1,23 @@
 import { Alert } from 'react-native'
-import { refreshToken } from './user'
-import { getItem, setItem } from '@/store/secureStorage'
+import { getItemSec, removeItemSec } from '@/store/secureStorage'
 import { router } from 'expo-router'
+import { removeItem } from '@/store/asyncStorage'
+import { setIsLoggedInState } from '@/services/user'
 
 const apiBase = process.env.EXPO_PUBLIC_API_BASE
 
 async function getAccessToken() {
-  return await getItem('accessToken')
+  return await getItemSec('accessToken')
+}
+
+function forcedExit(){
+  Alert.alert('Время перезойти в аккаунт!')
+  removeItemSec('accessToken')
+  removeItemSec('refreshToken')
+  setIsLoggedInState(false)
+  removeItem('role')
+  removeItem('user_id')
+  router.replace('/login')
 }
 
 export async function get(
@@ -41,8 +52,7 @@ export async function get(
         },
       })
   if (response.status === 401) {
-    Alert.alert('Время перезойти в аккаунт!')
-    router.replace('/login')
+    forcedExit()
   }
   return response
 }
@@ -61,8 +71,7 @@ export async function post(
     body: data ? JSON.stringify(data) : undefined,
   })
   if (response.status === 401) {
-    Alert.alert('Время перезойти в аккаунт!')
-    router.replace('/login')
+    forcedExit()
   }
   return response
 }
@@ -81,8 +90,7 @@ export async function put(
     body: data ? JSON.stringify(data) : undefined,
   })
   if (response.status === 401) {
-    Alert.alert('Время перезойти в аккаунт!')
-    router.replace('/login')
+    forcedExit()
   }
   return response
 }
@@ -101,8 +109,7 @@ export async function patch(
     body: data ? JSON.stringify(data) : undefined,
   })
   if (response.status === 401) {
-    Alert.alert('Время перезойти в аккаунт!')
-    router.replace('/login')
+    forcedExit()
   }
   return response
 }
@@ -117,8 +124,7 @@ export async function del(url: string): Promise<Response> {
     },
   })
   if (response.status === 401) {
-    Alert.alert('Время перезойти в аккаунт!')
-    router.replace('/login')
+    forcedExit()
   }
   return response
 }

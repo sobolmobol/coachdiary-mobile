@@ -1,6 +1,6 @@
 import * as SecureStore from 'expo-secure-store'
 
-export const setItem = async (key: string, value: string) => {
+export const setItemSec = async (key: string, value: string) => {
   try {
     await SecureStore.setItemAsync(key, JSON.stringify(value))
   } catch (error) {
@@ -8,7 +8,7 @@ export const setItem = async (key: string, value: string) => {
   }
 }
 
-export const getItem = async (key: string) => {
+export const getItemSec = async (key: string) => {
   try {
     const value = await SecureStore.getItemAsync(key)
     return value != null ? JSON.parse(value) : null
@@ -18,7 +18,7 @@ export const getItem = async (key: string) => {
   }
 }
 
-export const removeItem = async (key: string) => {
+export const removeItemSec = async (key: string) => {
   try {
     await SecureStore.deleteItemAsync(key)
   } catch (error) {

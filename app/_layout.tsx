@@ -17,8 +17,8 @@ export default function RootLayout() {
       const response = await get('/profile/')
       if (response.ok) {
         const data: ProfileResponse = await response.json()
-        setItem('role', data.role)
-        setItem('user_id', data.id.toString())
+        await setItem('role', data.role)
+        await setItem('user_id', data.id.toString())
       } else {
         Alert.alert('Ошибка', getErrorMessage(response.json()))
       }

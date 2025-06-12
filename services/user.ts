@@ -6,16 +6,17 @@ import {
   RegisterRequestByCode,
   InfoByCode,
 } from '@/types/types'
-import { getItem, setItem, removeItem } from '@/store/secureStorage'
+import { getItemSec, setItemSec, removeItemSec } from '@/store/secureStorage'
+import { removeItem } from '@/store/asyncStorage'
 import { Router } from 'expo-router'
 import { Alert } from 'react-native'
 import { getErrorMessage } from '@/services/utils'
 
 export async function setIsLoggedInState(isLoggedIn: boolean) {
-  setItem('isLoggedIn', String(isLoggedIn))
+  setItemSec('isLoggedIn', String(isLoggedIn))
 }
 export const getIsLoggedInState = async (): Promise<boolean> => {
-  const isLoggedIn = await getItem('isLoggedIn')
+  const isLoggedIn = await getItemSec('isLoggedIn')
   return isLoggedIn === 'true'
 }
 
@@ -52,8 +53,8 @@ export async function login(email: string, password: string, router: Router) {
     )
     const data = await response.json()
     if (response.ok) {
-      await setItem('accessToken', data.access_token)
-      await setItem('refreshToken', data.refresh_token)
+      await setItemSec('accessToken', data.access_token)
+      await setItemSec('refreshToken', data.refresh_token)
       await setIsLoggedInState(true)
       router.replace('/')
       return data
@@ -69,7 +70,7 @@ export async function login(email: string, password: string, router: Router) {
 }
 export async function refreshToken(router: Router) {
   try {
-    const refreshToken = await getItem('refreshToken')
+    const refreshToken = await getItemSec('refreshToken')
     if (refreshToken) {
       const req: TokenRefreshRequest = {
         grant_type: 'refresh_token',
@@ -88,8 +89,8 @@ export async function refreshToken(router: Router) {
       )
       const data = await response.json()
       if (response.ok) {
-        await setItem('accessToken', data.access_token)
-        await setItem('refreshToken', data.refresh_token)
+        await setItemSec('accessToken', data.access_token)
+        await setItemSec('refreshToken', data.refresh_token)
         return data.access_token
       } else {
         Alert.alert('Ошибка', getErrorMessage(await response.json()))
@@ -111,10 +112,12 @@ export async function refreshToken(router: Router) {
 
 export async function logout(router: Router) {
   try {
-    const token = await getItem('accessToken')
+    const token = await getItemSec('accessToken')
     if (token === null) {
-      await removeItem('accessToken')
-      await removeItem('refreshToken')
+      await removeItemSec('accessToken')
+      await removeItemSec('refreshToken')
+      await removeItem('role')
+      await removeItem('user_id')
       await setIsLoggedInState(false)
       router.replace('/login')
       return
@@ -139,8 +142,10 @@ export async function logout(router: Router) {
         ? await response.json()
         : null
     if (response.ok) {
-      await removeItem('accessToken')
-      await removeItem('refreshToken')
+      await removeItemSec('accessToken')
+      await removeItemSec('refreshToken')
+      await removeItem('role')
+      await removeItem('user_id')
       await setIsLoggedInState(false)
       router.replace('/login')
       return data
