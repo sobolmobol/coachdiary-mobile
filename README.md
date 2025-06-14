@@ -46,7 +46,7 @@
       },
       "env": {
         "EXPO_PUBLIC_API_BASE": "YOUR_API",
-        "EXPO_PUBLIC_CLIENT_ID": YOUR_CLIENT_ID"
+        "EXPO_PUBLIC_CLIENT_ID": "YOUR_CLIENT_ID"
       }
     },
     "preview": {
