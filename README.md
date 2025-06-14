@@ -86,9 +86,9 @@
 ```
    eas login
 ```
-7. Создай сборку для разработки
+7. Создай preview-сборку
 ```
-   eas build --platform android --profile development
+   eas build --platform android --profile preview
 ```
 
 ## Документация
