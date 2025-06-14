@@ -93,11 +93,11 @@
 
 ## Документация
 
-- [сборка для разработки](https://docs.expo.dev/develop/development-builds/introduction/)
+- [Cборка для разработки](https://docs.expo.dev/develop/development-builds/introduction/)
 - [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
 - [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo документация](https://docs.expo.dev/).
-- [Изучите туториалы](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- [Expo документация](https://docs.expo.dev/)
+- [Туториалы](https://docs.expo.dev/tutorial/introduction/)
 
 Проект использует навигацию на основе файлов (https://docs.expo.dev/router/introduction).
 
