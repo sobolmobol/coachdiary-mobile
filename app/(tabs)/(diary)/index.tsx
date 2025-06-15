@@ -31,6 +31,7 @@ export default function Index() {
   const [filteredStudents, setFilteredStudents] = useState<
     StudentsValueResponse[]
   >([])
+  const [isLoadingResults, setIsLoadingResults] = useState(false)
   const router = useRouter()
   const [classes, setClasses] = useState<ClassResponse[]>([])
   const [standards, setStandards] = useState<StandardResponse[]>([])
@@ -83,6 +84,7 @@ export default function Index() {
   }
   async function updateResults(updatedStudents: StudentsValueResponse[]) {
     try {
+      setIsLoadingResults(true)
       const req: StudentValueRequest[] = updatedStudents.map((student) => ({
         student_id: student.id,
         standard_id: selectedStandard.id,
@@ -100,6 +102,8 @@ export default function Index() {
         'Ошибка',
         'Произошла ошибка во время отправки данных, попробуйте еще раз'
       )
+    } finally{
+      setIsLoadingResults(false)
     }
   }
   async function getClasses() {
@@ -180,7 +184,7 @@ export default function Index() {
           standard: '',
         })
       }
-    }, [])
+    }, [role])
   )
   useEffect(() => {
     setStandardType(() => {
@@ -313,6 +317,7 @@ export default function Index() {
           areChosenClaAndSt={
             selectedStandard.id !== -1 && selectedClass.class_number !== -1
           }
+          isLoadingResults={isLoadingResults}
         />
       </View>
       <Fab

@@ -47,13 +47,13 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="classes"
+        name="(classes)"
         options={{
           title: 'Мои классы',
           tabBarIcon: ({ color }) => (
             <FontAwesome6 name="people-group" size={24} color={color} />
           ),
-          href: role === 'student' ? null : '/(tabs)/classes'
+          href: role === 'student' ? null : '/(tabs)/(classes)'
         }}
       />
       <Tabs.Screen

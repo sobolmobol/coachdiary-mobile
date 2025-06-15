@@ -25,6 +25,7 @@ import {
   TableRow,
   TableData,
 } from '@/components/ui/table'
+import { Link } from 'expo-router'
 
 function CodeItem({ code, isReg }: { code: string, isReg: boolean }) {
   const [shown, setShown] = useState(false)
@@ -95,7 +96,7 @@ function AccordionTable({
             <Table className="w-full table-auto">
               <TableHeader>
                 <TableRow className="bg-primary-0/20 border-primary-0/50">
-                  <TableHead className="text-typography-1 text-xs max-w-[50px]">
+                  <TableHead className="text-typography-1 text-xs max-w-[60px]">
                     <Text>№</Text>
                   </TableHead>
                   <TableHead className="text-typography-1 text-xs flex-1">
@@ -113,11 +114,18 @@ function AccordionTable({
                       key={item.id}
                       className="flex border-primary-0/50 flex-row bg-background-1"
                     >
-                      <TableData className="font-bold text-typography-1 text-xs max-w-[50px]">
+                      <TableData className="font-bold text-typography-1 text-xs max-w-[60px]">
                         <Text>{index + 1}</Text>
                       </TableData>
-                      <TableData className="font-bold text-typography-1 text-xs flex-1">
-                        <Text>{item.full_name}</Text>
+                      <TableData className="font-bold text-primary-0 underline text-xs flex-1">
+                        <Link
+                          href={{
+                            pathname: '/student/[id]',
+                            params: { id: item.id },
+                          }}
+                        >
+                          <Text>{item.full_name}</Text>
+                        </Link>
                       </TableData>
                       <TableData className="font-bold text-typography-1 text-xs flex-1">
                         <CodeItem

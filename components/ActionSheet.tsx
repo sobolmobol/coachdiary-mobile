@@ -236,14 +236,14 @@ function ActionSheet({
       if (value >= 1970 && value <= 2025) {
         setYearFrom(value)
       } else {
-        setYearFrom(1970)
-      }
+        setYearFrom(1970)      }
     } else {
       setYearFrom(value)
     }
   }
+  
   return (
-    <Actionsheet {...props}>
+    <Actionsheet {...props} useRNModal={true}>
       <ActionsheetBackdrop />
       <ActionsheetContent className="bg-background-1 rounded-t-custom-big border-0">
         <ActionsheetDragIndicatorWrapper>
