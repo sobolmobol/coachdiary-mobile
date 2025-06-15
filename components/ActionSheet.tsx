@@ -243,10 +243,10 @@ function ActionSheet({
   }
   
   return (
-    <Actionsheet {...props} snapPoints={[50]} closeOnOverlayClick={false} useRNModal={true}>
+    <Actionsheet {...props} useRNModal={true}>
       <ActionsheetBackdrop />
-      <ActionsheetContent>
-        <ActionsheetDragIndicatorWrapper>
+      <ActionsheetContent className="bg-background-1 rounded-t-custom-big border-0">
+        <ActionsheetDragIndicatorWrapper >
           <ActionsheetDragIndicator className="bg-primary-0 rounded-custom-big" />
           <View className="my-2 w-full flex items-center">
             <Text className="font-extrabold text-lg text-center text-primary-0">
