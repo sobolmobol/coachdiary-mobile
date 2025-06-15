@@ -24,12 +24,14 @@ export default function StudentStandardTable({
   standards,
   onStandardChange,
   sumGrade,
-  role = null
+  role = null,
+  isResultsLoading
 }: {
   standards: StandardByLevel[]
   onStandardChange: (updatedStandards: StandardByLevel[]) => void
   sumGrade: number
   role: string | null
+  isResultsLoading: boolean
 } ) {
   const [currentPage, setCurrentPage] = useState(1)
   const [updatedStandards, setUpdatedStandards] = useState<StandardByLevel[]>(
@@ -204,6 +206,7 @@ export default function StudentStandardTable({
               size="xs"
               onPress={() => saveData()}
               classNameText="text-background-1"
+              isDisabled={isResultsLoading}
             />}
           </View>
         </TableFooter>

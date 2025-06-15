@@ -20,12 +20,14 @@ function DiaryTable({
   standardType,
   onStudentsChange,
   areChosenClaAndSt,
+  isLoadingResults = false,
   ...props
 }: {
   students: StudentsValueResponse[]
   standardType: string
   onStudentsChange: (updStudents: StudentsValueResponse[]) => void
-  areChosenClaAndSt: Boolean
+  areChosenClaAndSt: boolean
+  isLoadingResults: boolean
 } & React.ComponentProps<typeof Table>) {
   const [currentPage, setCurrentPage] = useState(1)
   const [updatedStudents, setUpdatedStudents] = useState<
@@ -44,7 +46,7 @@ function DiaryTable({
   }
   const handleInputChange = (
     id: number,
-    field: 'value' | 'grade',
+    field: 'average_value' | 'average_grade',
     newValue: string
   ) => {
     if (Number.isNaN(+newValue)) {
@@ -165,7 +167,7 @@ function DiaryTable({
                           className="text-s text-center font-extrabold text-typography-1"
                           value={student.average_value?.toString() ?? ''}
                           onChangeText={(text: string) =>
-                            handleInputChange(student.id, 'value', text)
+                            handleInputChange(student.id, 'average_value', text)
                           }
                         />
                       </Input>
@@ -192,7 +194,7 @@ function DiaryTable({
                         className={`text-center font-extrabold text-s text-${getGradeColor(student.average_grade ?? 0)}`}
                         value={student.average_grade?.toString() ?? ''}
                         onChangeText={(text: string) =>
-                          handleInputChange(student.id, 'grade', text)
+                          handleInputChange(student.id, 'average_grade', text)
                         }
                       />
                     </Input>
@@ -227,6 +229,7 @@ function DiaryTable({
               size="xs"
               onPress={() => saveData()}
               classNameText="text-background-1"
+              isDisabled={isLoadingResults}
             />
           </View>
         </TableFooter>
