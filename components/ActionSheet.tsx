@@ -236,21 +236,20 @@ function ActionSheet({
       if (value >= 1970 && value <= 2025) {
         setYearFrom(value)
       } else {
-        setYearFrom(1970)
-      }
+        setYearFrom(1970)      }
     } else {
       setYearFrom(value)
     }
   }
+  
   return (
-    <Actionsheet {...props}>
+    <Actionsheet {...props} snapPoints={[50]} closeOnOverlayClick={false} useRNModal={true}>
       <ActionsheetBackdrop />
-      <ActionsheetContent className="bg-background-1 rounded-t-custom-big border-0">
+      <ActionsheetContent>
         <ActionsheetDragIndicatorWrapper>
           <ActionsheetDragIndicator className="bg-primary-0 rounded-custom-big" />
           <View className="my-2 w-full flex items-center">
-            <Text className="font-extrabold text-m text-start text-primary-0">
-              {' '}
+            <Text className="font-extrabold text-lg text-center text-primary-0">
               {isClasses
                 ? 'Классы'
                 : isStandards
@@ -259,22 +258,26 @@ function ActionSheet({
                     ? 'Фильтры'
                     : isStudentInfo
                       ? 'Информация об ученике'
-                      : 'Класс'}{' '}
+                      : 'Класс'}
             </Text>
           </View>
           <Divider
             className="w-full my-0.5 bg-primary-0/20"
             orientation="horizontal"
           />
-        </ActionsheetDragIndicatorWrapper>
-        {isStandards &&
+        </ActionsheetDragIndicatorWrapper>        {isStandards &&
           (standards.length !== 0 ? (
-            <FlatList
-              data={standards}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.id.toString()}
-              contentContainerClassName="flex items-center"
-            />
+            <ActionsheetScrollView>
+              <Text style={{ fontSize: 18, color: 'red', textAlign: 'center', padding: 10 }}>
+                Standards found: {standards.length}
+              </Text>
+              <FlatList
+                data={standards}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id.toString()}
+                contentContainerClassName="flex items-center"
+              />
+            </ActionsheetScrollView>
           ) : (
             <ActionsheetScrollView>
               <ActionsheetItem>
@@ -283,9 +286,11 @@ function ActionSheet({
                 </ActionsheetItemText>
               </ActionsheetItem>
             </ActionsheetScrollView>
-          ))}
-        {isClasses && (
+          ))}        {isClasses && (
           <ActionsheetScrollView>
+            <Text style={{ fontSize: 18, color: 'blue', textAlign: 'center', padding: 10 }}>
+              Classes section - Loading: {isLoading ? 'Yes' : 'No'}
+            </Text>
             {isLoading ? (
               <Text>Загрузка классов...</Text>
             ) : (
@@ -298,9 +303,11 @@ function ActionSheet({
               />
             )}
           </ActionsheetScrollView>
-        )}
-        {isFilter && (
+        )}        {isFilter && (
           <ActionsheetScrollView>
+            <Text style={{ fontSize: 18, color: 'green', textAlign: 'center', padding: 10 }}>
+              Filters section
+            </Text>
             <View className="flex w-full gap-2 p-2">
               <Text className="text-center text-typography-1 font-bold text-s">
                 Пол
